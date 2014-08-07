@@ -2,12 +2,26 @@
 using System.Threading.Tasks;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
+using System.Collections.Generic;
+using System.Data.Entity;
 
 namespace MyWebApp.Models
 {
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
+
+        public virtual ICollection<Problem> CeratedProblems { get; set; }
+
+        public virtual ICollection<UserAttemptedProblem> AttemptedProblems { get; set; }
+        public virtual ICollection<UserAttemptedProblem> SolvedProblems { get; set; }
+
+        public virtual ICollection<Like> Likes { get; set; }
+        public virtual ICollection<Dislike> Dislikes { get; set; }
+        public virtual ICollection<Comment> Comments { get; set; }
+        public virtual ICollection<Image> Images { get; set; }
+        public virtual ICollection<Video> Videos { get; set; }
+
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -19,6 +33,23 @@ namespace MyWebApp.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
+
+        public virtual DbSet<Video> Videos { get; set; }
+
+        public virtual DbSet<Tag> Tags { get; set; }
+
+        public virtual DbSet<Like> Likes { get; set; }
+
+        public virtual DbSet<Dislike> Dislikes { get; set; }
+
+        public virtual DbSet<Comment> Comments { get; set; }
+
+        public virtual DbSet<Image> Images { get; set; }
+
+        public virtual DbSet<Problem> Problems { get; set; }
+
+        public virtual DbSet<Category> Categories { get; set; }
+
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {

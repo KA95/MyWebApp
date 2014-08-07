@@ -164,7 +164,17 @@
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
     <Compile Include="Models\AccountViewModels.cs" />
+    <Compile Include="Models\CategoryModels.cs" />
+    <Compile Include="Models\CommentModels.cs" />
+    <Compile Include="Models\DislikeModels.cs" />
     <Compile Include="Models\IdentityModels.cs" />
+    <Compile Include="Models\ImageModels.cs" />
+    <Compile Include="Models\LikeModels.cs" />
+    <Compile Include="Models\ProblemModels.cs" />
+    <Compile Include="Models\TagModels.cs" />
+    <Compile Include="Models\UserAttemptedProblem.cs" />
+    <Compile Include="Models\UserSolvedProblem.cs" />
+    <Compile Include="Models\VideoModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Startup.cs" />
   </ItemGroup>
