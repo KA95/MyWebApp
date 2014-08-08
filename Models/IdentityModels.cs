@@ -10,9 +10,8 @@ namespace MyWebApp.Models
     // You can add profile data for the user by adding more properties to your ApplicationUser class, please visit http://go.microsoft.com/fwlink/?LinkID=317594 to learn more.
     public class ApplicationUser : IdentityUser
     {
-
-        public virtual ICollection<Problem> CeratedProblems { get; set; }
-        
+        public int Rating { get; set; }
+        public virtual ICollection<Problem> CreatedProblems { get; set; }
         public virtual ICollection<UserAttemptedProblem> AttemptedProblems { get; set; }
         public virtual ICollection<UserSolvedProblem> SolvedProblems { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
@@ -46,6 +45,8 @@ namespace MyWebApp.Models
         public DbSet<Image> Images { get; set; }
 
         public DbSet<Problem> Problems { get; set; }
+
+        public DbSet<Answer> Answers { get; set; }
 
         public DbSet<Category> Categories { get; set; }
 
