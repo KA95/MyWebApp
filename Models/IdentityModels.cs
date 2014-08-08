@@ -12,10 +12,9 @@ namespace MyWebApp.Models
     {
 
         public virtual ICollection<Problem> CeratedProblems { get; set; }
-
+        
         public virtual ICollection<UserAttemptedProblem> AttemptedProblems { get; set; }
         public virtual ICollection<UserSolvedProblem> SolvedProblems { get; set; }
-
         public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Dislike> Dislikes { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }

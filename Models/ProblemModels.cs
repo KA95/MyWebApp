@@ -13,6 +13,7 @@ namespace MyWebApp.Models
         public int CategoryId { get; set; }
 
         public virtual ApplicationUser Author { get; set; }
+        public virtual ICollection<Answer> CorrectAnswers { get; set; }
         public virtual Category Category { get; set; }
         public virtual ICollection<UserSolvedProblem> UsersWhoSolved { get; set; }
         public virtual ICollection<UserAttemptedProblem> UsersWhoAttempted { get; set; }
