@@ -14,7 +14,7 @@ namespace MyWebApp.Models
         public virtual ICollection<Problem> CeratedProblems { get; set; }
 
         public virtual ICollection<UserAttemptedProblem> AttemptedProblems { get; set; }
-        public virtual ICollection<UserAttemptedProblem> SolvedProblems { get; set; }
+        public virtual ICollection<UserSolvedProblem> SolvedProblems { get; set; }
 
         public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Dislike> Dislikes { get; set; }
@@ -34,21 +34,21 @@ namespace MyWebApp.Models
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
 
-        public virtual DbSet<Video> Videos { get; set; }
+        public DbSet<Video> Videos { get; set; }
 
-        public virtual DbSet<Tag> Tags { get; set; }
+        public DbSet<Tag> Tags { get; set; }
 
-        public virtual DbSet<Like> Likes { get; set; }
+        public DbSet<Like> Likes { get; set; }
 
-        public virtual DbSet<Dislike> Dislikes { get; set; }
+        public DbSet<Dislike> Dislikes { get; set; }
 
-        public virtual DbSet<Comment> Comments { get; set; }
+        public DbSet<Comment> Comments { get; set; }
 
-        public virtual DbSet<Image> Images { get; set; }
+        public DbSet<Image> Images { get; set; }
 
-        public virtual DbSet<Problem> Problems { get; set; }
+        public DbSet<Problem> Problems { get; set; }
 
-        public virtual DbSet<Category> Categories { get; set; }
+        public DbSet<Category> Categories { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
