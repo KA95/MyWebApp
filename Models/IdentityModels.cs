@@ -31,24 +31,16 @@ namespace MyWebApp.Models
 
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
-
-        public DbSet<Video> Videos { get; set; }
-
-        public DbSet<Tag> Tags { get; set; }
-
-        public DbSet<Like> Likes { get; set; }
-
-        public DbSet<Dislike> Dislikes { get; set; }
-
-        public DbSet<Comment> Comments { get; set; }
-
-        public DbSet<Image> Images { get; set; }
-
-        public DbSet<Problem> Problems { get; set; }
-
-        public DbSet<Answer> Answers { get; set; }
-
+        public DbSet<Answer> Dislikes { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Comment> Comments { get; set; }
+        public DbSet<Image> Images { get; set; }
+        public DbSet<Like> Likes { get; set; }
+        public DbSet<Problem> Problems { get; set; }
+        public DbSet<Video> Videos { get; set; }
+        public DbSet<Tag> Tags { get; set; }
+        public DbSet<UserAttemptedProblem> UserAttemptedProblems { get; set; }
+        public DbSet<UserSolvedProblem> UserSolvedProblems { get; set; }
 
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)

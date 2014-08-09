@@ -13,4 +13,7 @@ namespace MyWebApp.Models
         public virtual Problem Problem { get; set; }
         public virtual ApplicationUser User { get; set; }
     }
+    
+
+ 
 }
