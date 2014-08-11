@@ -1,0 +1,33 @@
+﻿@model IEnumerable<MyWebApp.Models.Problem>
+@{
+    ViewBag.Title = "Home Page";
+}
+@Html.Partial("_NavMenu")
+<div class="jumbotron">
+    
+    <table title="Problems" class="table table-striped table-hover ">
+        <thead>
+            <tr>
+                <th>Problem</th>
+                <th>User</th>
+            </tr>
+        </thead>
+        @foreach (var problem in Model)
+        {
+            <tr>
+                <th>
+                    @Html.ActionLink(problem.Name, "Show", "Admin", new { id = problem.Id }, null)
+                </th>
+                <th>
+                    @problem.Author.UserName.ToString()
+                </th>
+                <th>
+                    @Html.ActionLink("Delete", "Delete", "Admin", new { id = problem.Id }, null)
+                </th>
+                <th>
+                    @Html.ActionLink("Edit", "Edit", "Admin", new { id = problem.Id }, null)
+                </th>
+            </tr>
+        }
+    </table> 
+</div>

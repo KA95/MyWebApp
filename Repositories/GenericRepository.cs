@@ -13,9 +13,9 @@ namespace MyWebApp.Repositories
         internal ApplicationDbContext context;
         internal DbSet<TEntity> dbSet;
 
-        public GenericRepository(ApplicationDbContext context)
+        public GenericRepository()
         {
-            this.context = context;
+            this.context = new ApplicationDbContext();
             this.dbSet = context.Set<TEntity>();
         }
 
