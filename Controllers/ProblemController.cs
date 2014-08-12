@@ -11,10 +11,23 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace MyWebApp.Controllers
 {
+    class MyViewModel
+    {
+        Problem problem { get; set; }
+        IEnumerable<Category> categories { get; set; }
+
+        public MyViewModel(Problem problem)
+        {
+            // TODO: Complete member initialization
+            this.problem = problem;
+            var repository = new GenericRepository<Category>();
+            categories = repository.Get();
+        }
+    }
+
     public class ProblemController : Controller
     {
         private GenericRepository<Problem> repository = new GenericRepository<Problem>();
-
         private ApplicationUserManager _userManager;
 
         public ApplicationUserManager UserManager
@@ -86,7 +99,7 @@ namespace MyWebApp.Controllers
 
             ViewBag.Button = "Create";
             Problem problem= new Problem();
-            return View(problem);
+            return View(new MyViewModel(problem));
         }
 
         [HttpPost]
@@ -95,7 +108,8 @@ namespace MyWebApp.Controllers
         {
             if (problem.Name == null || problem.Name == "")
                 RedirectToAction("Index");
-            problem.Author = UserManager.FindByName(User.Identity.Name).Id;
+            problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
+            problem.Author = UserManager.FindByName(User.Identity.Name);
             
             repository.Insert(problem);
 

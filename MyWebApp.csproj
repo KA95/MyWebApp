@@ -207,6 +207,7 @@
     <Compile Include="Models\ImageModels.cs" />
     <Compile Include="Models\LikeModels.cs" />
     <Compile Include="Models\ProblemModels.cs" />
+    <Compile Include="Models\ProblemViewModel.cs" />
     <Compile Include="Models\TagModels.cs" />
     <Compile Include="Models\UserAttemptedProblem.cs" />
     <Compile Include="Models\UserSolvedProblem.cs" />
