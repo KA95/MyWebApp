@@ -5,6 +5,8 @@ using Microsoft.Owin;
 using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.DataProtection;
 using Microsoft.Owin.Security.Google;
+using Owin.Security.Providers.GitHub;
+
 using Owin;
 using System;
 using MyWebApp.Models;
@@ -46,10 +48,11 @@ namespace MyWebApp
             //   consumerKey: "",
             //   consumerSecret: "");
 
-            //app.UseFacebookAuthentication(
-            //   appId: "",
-            //   appSecret: "");
+            app.UseFacebookAuthentication(
+               appId: "302154543299318",
+               appSecret: "9e7f5db2fe0fb92e929a6c20d577e67a");
 
+            app.UseGitHubAuthentication("4e50c0894ad4a0a0b36e", "f8bfe6a1b9d34dcf61e7c998d94714366728331e");
             //app.UseGoogleAuthentication(new GoogleOAuth2AuthenticationOptions()
             //{
             //    ClientId = "",
