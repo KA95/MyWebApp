@@ -11,7 +11,8 @@ namespace MyWebApp.Controllers
     [Authorize(Roles="admin")]
     public class AdminController : Controller
     {
-        private GenericRepository<Problem> repository = new GenericRepository<Problem>();
+        private GenericRepository<Problem> problemRepository = new GenericRepository<Problem>();
+        private GenericRepository<ApplicationUser> userRepository = new GenericRepository<ApplicationUser>();
         // GET: Admin
         public ActionResult Index()
         {
@@ -19,22 +20,32 @@ namespace MyWebApp.Controllers
         }
         public ActionResult Problems()
         {
-            return View(repository.Get());
+            return View(problemRepository.Get());
         }
         public ActionResult Users()
         {
-            return View();
+            return View(userRepository.Get());
         }
 
         [HttpGet]
-        public ActionResult Delete(int? id)
+        public ActionResult DeleteProblem(int? id)
         {
             if (id != null)
             {
-                repository.Delete(id);
+                problemRepository.Delete(id);
             }
             return RedirectToAction("Index");
         }
+        [HttpGet]
+        public ActionResult DeleteUser(int? id)
+        {
+            if (id != null)
+            {
+                userRepository.Delete(id);
+            }
+            return RedirectToAction("Index");
+        }
+
 
     }
 }

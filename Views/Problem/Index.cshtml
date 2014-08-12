@@ -1,6 +1,32 @@
-﻿@{
-    ViewBag.Title = "Home Page";
-}
-<div class="jumbotron">    
-    Problem
-</div>
+﻿@model IEnumerable<MyWebApp.Models.Problem>
+    @{
+        ViewBag.Title = "Index";
+        Layout = "~/Views/Shared/_Layout.cshtml";
+    }
+
+    <div class="jumbotron">
+
+        <table title="Problems" class="table table-striped table-hover ">
+            <thead>
+                <tr>
+                    <th>Problem</th>
+                    <th>User</th>
+                    <th>Solved</th>
+                </tr>
+            </thead>
+            @foreach (var problem in Model)
+            {
+                <tr>
+                    <th>
+                        @Html.ActionLink(problem.Name, "Show", "Problem", new { id = problem.Id },null)
+                    </th>
+                    <th>
+                        @problem.Author.UserName.ToString()
+                    </th>
+                    <th>
+                       @problem.UsersWhoSolved.Count()
+                    </th>
+                </tr>
+            }
+        </table>
+    </div>

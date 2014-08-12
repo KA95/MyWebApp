@@ -16,16 +16,16 @@
         {
             <tr>
                 <th>
-                    @Html.ActionLink(problem.Name, "Show", "Admin", new { id = problem.Id }, null)
+                    @Html.ActionLink(problem.Name, "Show", "Problem", new { id = problem.Id }, null)
                 </th>
                 <th>
                     @problem.Author.UserName.ToString()
                 </th>
                 <th>
-                    @Html.ActionLink("Delete", "Delete", "Admin", new { id = problem.Id }, null)
+                    @Html.ActionLink("Delete", "DeleteProblem", "Admin", new { id = problem.Id }, null)
                 </th>
                 <th>
-                    @Html.ActionLink("Edit", "Edit", "Admin", new { id = problem.Id }, null)
+                    @Html.ActionLink("Edit", "Edit", "Problem", new { id = problem.Id }, null)
                 </th>
             </tr>
         }
