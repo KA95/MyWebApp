@@ -13,5 +13,9 @@ namespace MyWebApp.Controllers
         {
             return View();
         }
+        public ActionResult Show(string id)
+        {
+            return View();
+        }
     }
 }

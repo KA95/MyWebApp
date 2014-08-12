@@ -5,14 +5,30 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace MyWebApp.Controllers
 {
     [Authorize(Roles="admin")]
     public class AdminController : Controller
     {
+        private ApplicationUserManager _userManager;
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+
         private GenericRepository<Problem> problemRepository = new GenericRepository<Problem>();
-        private GenericRepository<ApplicationUser> userRepository = new GenericRepository<ApplicationUser>();
         // GET: Admin
         public ActionResult Index()
         {
@@ -24,7 +40,7 @@ namespace MyWebApp.Controllers
         }
         public ActionResult Users()
         {
-            return View(userRepository.Get());
+            return View(UserManager.Users);
         }
 
         [HttpGet]
@@ -34,16 +50,16 @@ namespace MyWebApp.Controllers
             {
                 problemRepository.Delete(id);
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Problems");
         }
         [HttpGet]
-        public ActionResult DeleteUser(int? id)
+        public ActionResult DeleteUser(string id)
         {
             if (id != null)
             {
-                userRepository.Delete(id);
+                UserManager.Delete(UserManager.FindById(id));
             }
-            return RedirectToAction("Index");
+            return RedirectToAction("Users");
         }
 
 

@@ -5,6 +5,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.EntityFramework;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace MyWebApp.Controllers
 {
@@ -12,7 +15,20 @@ namespace MyWebApp.Controllers
     {
         private GenericRepository<Problem> repository = new GenericRepository<Problem>();
 
-        // GET: User
+        private ApplicationUserManager _userManager;
+
+        public ApplicationUserManager UserManager
+        {
+            get
+            {
+                return _userManager ?? HttpContext.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            }
+            private set
+            {
+                _userManager = value;
+            }
+        }
+    
         public ActionResult Index()
         {
             return View(repository.Get());
@@ -64,7 +80,7 @@ namespace MyWebApp.Controllers
             dbcontext.SaveChanges();
             return RedirectToAction("Index");
         }*/
-
+        [Authorize]
         public ActionResult Create()
         {
 
@@ -74,11 +90,15 @@ namespace MyWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public ActionResult Create(Problem problem)
         {
             if (problem.Name == null || problem.Name == "")
                 RedirectToAction("Index");
+            problem.Author = UserManager.FindByName(User.Identity.Name).Id;
+            
             repository.Insert(problem);
+
             return RedirectToAction("Index");
         }
     }

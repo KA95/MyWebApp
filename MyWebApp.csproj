@@ -295,6 +295,7 @@
     <Content Include="Views\Admin\Problems.cshtml" />
     <Content Include="Views\Problem\Show.cshtml" />
     <Content Include="Views\Problem\Create.cshtml" />
+    <Content Include="Views\User\Show.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

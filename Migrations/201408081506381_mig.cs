@@ -1,4 +1,4 @@
-namespace MyWebApp.Migrations
+3namespace MyWebApp.Migrations
 {
     using System;
     using System.Data.Entity.Migrations;
