@@ -1,4 +1,5 @@
 ﻿using MyWebApp.Models;
+using MyWebApp.Repositories.Interfaces;
 using System;
 using System.Collections.Generic;
 using System.Data.Entity;
@@ -8,14 +9,14 @@ using System.Web;
 
 namespace MyWebApp.Repositories
 {
-    public class GenericRepository<TEntity> where TEntity : class
+    public class GenericRepository<TEntity> :IRepository<TEntity> where TEntity : class
     {
         internal ApplicationDbContext context;
         internal DbSet<TEntity> dbSet;
 
-        public GenericRepository()
+        public GenericRepository(ApplicationDbContext context)
         {
-            this.context = new ApplicationDbContext();
+            this.context = context;
             this.dbSet = context.Set<TEntity>();
         }
 
@@ -55,6 +56,7 @@ namespace MyWebApp.Repositories
         public virtual void Insert(TEntity entity)
         {
             dbSet.Add(entity);
+            context.SaveChanges();
         }
 
         public virtual void Delete(object id)
@@ -70,12 +72,14 @@ namespace MyWebApp.Repositories
                 dbSet.Attach(entityToDelete);
             }
             dbSet.Remove(entityToDelete);
+            context.SaveChanges();
         }
 
         public virtual void Update(TEntity entityToUpdate)
         {
             dbSet.Attach(entityToUpdate);
             context.Entry(entityToUpdate).State = EntityState.Modified;
+            context.SaveChanges();
         }
     }
 }

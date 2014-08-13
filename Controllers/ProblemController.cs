@@ -1,4 +1,5 @@
 ﻿using MyWebApp.Models;
+using MyWebApp.ViewModels;
 using MyWebApp.Repositories;
 using System;
 using System.Collections.Generic;
@@ -8,26 +9,24 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
+using MyWebApp.Repositories.Interfaces;
 
 namespace MyWebApp.Controllers
 {
-    class MyViewModel
-    {
-        Problem problem { get; set; }
-        IEnumerable<Category> categories { get; set; }
-
-        public MyViewModel(Problem problem)
-        {
-            // TODO: Complete member initialization
-            this.problem = problem;
-            var repository = new GenericRepository<Category>();
-            categories = repository.Get();
-        }
-    }
-
+   
     public class ProblemController : Controller
     {
-        private GenericRepository<Problem> repository = new GenericRepository<Problem>();
+
+        private readonly IProblemRepository repository;
+        private readonly ICategoryRepository categoryRepository;
+
+
+        public ProblemController(IProblemRepository repository, CategoryRepository categoryRepository)
+        {
+            this.repository = repository;
+            this.categoryRepository = categoryRepository;
+        }
+
         private ApplicationUserManager _userManager;
 
         public ApplicationUserManager UserManager
@@ -98,22 +97,47 @@ namespace MyWebApp.Controllers
         {
 
             ViewBag.Button = "Create";
-            Problem problem= new Problem();
-            return View(new MyViewModel(problem));
+            Problem problem = new Problem();
+            CreateProblemViewModel pvm = new CreateProblemViewModel();
+            InitializeCreateProblemViewModel(pvm);
+            return View(pvm);
         }
 
         [HttpPost]
         [Authorize]
-        public ActionResult Create(ProblemViewModel problem)
+        public ActionResult Create(CreateProblemViewModel problemView)
         {
-        
-            if (problem.Name == null || problem.Name == "")
+
+            if (problemView.Name == null || problemView.Name == "" || problemView.Text == null || problemView.Text == "")
                 RedirectToAction("Index");
-            problem.Author = User.Identity.Name;
+
+            problemView.Author = User.Identity.Name;
+
+            repository.Insert(GetProblem(problemView));
             
-            repository.Insert(problem.GetProblem());
 
             return RedirectToAction("Index");
+        }
+
+
+
+
+
+        public Problem GetProblem(CreateProblemViewModel problemView)
+        {
+            Problem problem = new Problem();
+            //problem.Category = categoryRepository.GetByID(problemView.SelectedCategoryId);
+            problem.CategoryId = problemView.SelectedCategoryId;
+            problem.Name = problemView.Name;
+            problem.Text = problemView.Text;
+            //problem.Author = UserManager.FindByName(User.Identity.Name);
+            problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
+            return problem;
+
+        }
+
+        public void InitializeCreateProblemViewModel(CreateProblemViewModel problemView)
+        {
         }
     }
 }

@@ -1,4 +1,4 @@
-﻿@model MyWebApp.Models.ProblemViewModel
+﻿@model MyWebApp.ViewModels.CreateProblemViewModel
 @{
     ViewBag.Title = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,19 +6,23 @@
 
 <h2>Create</h2>
 
-@using (Html.BeginForm())
+@using (Html.BeginForm("Create","Problem",FormMethod.Post,new { @class = "form-horizontal"}))
 {
-    <div class="form-group">
-        @Html.LabelFor(model => model.Name, new { @class = "col-lg-10 control-label" })
-        @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
-    </div>
-    @*<div class="form-group">
-        @Html.LabelFor(model => model.Category, new { @class = "col-lg-10 control-label" })
-        @Html.DropDownListFor(model => model.Category, Model.Categories)
-    </div>*@
-    <div class="form-group">
-        @Html.LabelFor(model => model.Text, new { @class = "col-lg-10 control-label" })
-        @Html.TextBoxFor(model => model.Text, new { @class = "form-control" })
-    </div>
-    <input id="submitButton" type="submit" value="Create" />
+        <fieldset>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Name, new { @class = "col-lg-2 control-label" })
+                @Html.TextBoxFor(model => model.Name, new { @class = "form-control" })
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.SelectedCategoryId, new { @class = "col-lg-2 control-label" })
+                @Html.DropDownListFor(model => model.SelectedCategoryId, Model.Categories, new { @class = "col-lg-2 control-label", @id="select"})
+                @Html.ValidationMessageFor(m => m.SelectedCategoryId)
+            </div>
+            <div class="form-group">
+                @Html.LabelFor(model => model.Text, new { @class = "col-lg-2 control-label" })
+                @Html.TextBoxFor(model => model.Text, new { @class = "form-control" })
+            </div>
+
+            <input id="submitButton" type="submit" value="Create" />
+        </fieldset>
 }

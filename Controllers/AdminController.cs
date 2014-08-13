@@ -28,7 +28,7 @@ namespace MyWebApp.Controllers
             }
         }
 
-        private GenericRepository<Problem> problemRepository = new GenericRepository<Problem>();
+        private GenericRepository<Problem> problemRepository = new GenericRepository<Problem>(new ApplicationDbContext());
         // GET: Admin
         public ActionResult Index()
         {
