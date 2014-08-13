@@ -104,14 +104,14 @@ namespace MyWebApp.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult Create(Problem problem)
+        public ActionResult Create(ProblemViewModel problem)
         {
+        
             if (problem.Name == null || problem.Name == "")
                 RedirectToAction("Index");
-            problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
-            problem.Author = UserManager.FindByName(User.Identity.Name);
+            problem.Author = User.Identity.Name;
             
-            repository.Insert(problem);
+            repository.Insert(problem.GetProblem());
 
             return RedirectToAction("Index");
         }
