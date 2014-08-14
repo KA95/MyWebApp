@@ -99,7 +99,6 @@ namespace MyWebApp.Controllers
             ViewBag.Button = "Create";
             Problem problem = new Problem();
             CreateProblemViewModel pvm = new CreateProblemViewModel();
-            InitializeCreateProblemViewModel(pvm);
             return View(pvm);
         }
 
@@ -136,8 +135,6 @@ namespace MyWebApp.Controllers
 
         }
 
-        public void InitializeCreateProblemViewModel(CreateProblemViewModel problemView)
-        {
-        }
+       
     }
 }

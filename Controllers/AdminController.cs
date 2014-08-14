@@ -8,14 +8,19 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
-
+using MyWebApp.Repositories.Interfaces;
+//
 namespace MyWebApp.Controllers
 {
     [Authorize(Roles="admin")]
     public class AdminController : Controller
     {
         private ApplicationUserManager _userManager;
-
+        private readonly IProblemRepository problemRepository;
+        public AdminController(IProblemRepository problemRepository)
+        {
+            this.problemRepository = problemRepository;
+        }
         public ApplicationUserManager UserManager
         {
             get
@@ -28,7 +33,7 @@ namespace MyWebApp.Controllers
             }
         }
 
-        private GenericRepository<Problem> problemRepository = new GenericRepository<Problem>(new ApplicationDbContext());
+
         // GET: Admin
         public ActionResult Index()
         {

@@ -46,9 +46,7 @@ namespace MyWebApp.App_Start
             try
             {
                 kernel.Bind<Func<IKernel>>().ToMethod(ctx => () => new Bootstrapper().Kernel);
-                kernel.Bind<ApplicationDbContext>().ToSelf().InRequestScope();
-                kernel.Bind<IProblemRepository>().To<ProblemRepository>();
-                kernel.Bind<ICategoryRepository>().To<CategoryRepository>();
+               
 
                 RegisterServices(kernel);
                 return kernel;
@@ -66,6 +64,9 @@ namespace MyWebApp.App_Start
         /// <param name="kernel">The kernel.</param>
         private static void RegisterServices(IKernel kernel)
         {
+            kernel.Bind<ApplicationDbContext>().ToSelf().InRequestScope();
+            kernel.Bind<IProblemRepository>().To<ProblemRepository>();
+            kernel.Bind<ICategoryRepository>().To<CategoryRepository>();
         }        
     }
 }

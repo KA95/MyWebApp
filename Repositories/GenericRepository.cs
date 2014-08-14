@@ -9,7 +9,7 @@ using System.Web;
 
 namespace MyWebApp.Repositories
 {
-    public class GenericRepository<TEntity> :IRepository<TEntity> where TEntity : class
+    public abstract class GenericRepository<TEntity> :IRepository<TEntity> where TEntity : class
     {
         internal ApplicationDbContext context;
         internal DbSet<TEntity> dbSet;

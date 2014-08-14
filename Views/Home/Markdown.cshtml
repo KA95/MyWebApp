@@ -1,24 +1,25 @@
-﻿
-@{
+﻿@{
     ViewBag.Title = "Markdown";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
 <h2>Markdown</h2>
-    <form>
-        <input name="title" type="text" placeholder="Title?" />
-        <textarea name="content" data-provide="markdown" rows="10"></textarea>
-        <label class="checkbox">
-            <input name="publish" type="checkbox"> Publish
-        </label>
-        <hr />
-        <button type="submit" class="btn">Submit</button>
-    </form>
-    <script src="~/Scripts/jquery-1.10.2.min.js"></script>
-    <script src="~/Scripts/bootstrap-markdown.js"></script>
-    <link href="~/Content/bootstrap-markdown.min.css" rel="stylesheet" />
-    <script src="~/Scripts/to-markdown.js"></script>
-    <script src="~/Scripts/markdown.js"></script>
+<form>
+    <input name="title" type="text" placeholder="Title?" />
+    <textarea name="content" data-provide="markdown" rows="10" style="width:100%"></textarea>
+    <label class="checkbox">
+        <input name="publish" type="checkbox"> Publish
+    </label>
+    <hr />
+    <button type="submit" class="btn">Submit</button>
+</form>
+
+
+<script src="~/Scripts/jquery-1.10.2.min.js"></script>
+<script src="~/Scripts/bootstrap-markdown.js"></script>
+<link href="~/Content/bootstrap-markdown.min.css" rel="stylesheet" />
+<script src="~/Scripts/to-markdown.js"></script>
+<script src="~/Scripts/markdown.js"></script>
 
 
 

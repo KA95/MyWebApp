@@ -29,7 +29,7 @@ namespace MyWebApp.ViewModels
 
         public IEnumerable<string> Tags { get; set; }
 
-        private readonly List<Category> _categories = new GenericRepository<Category>(new ApplicationDbContext()).Get().ToList();
+        private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
 
         [Display(Name = "Category")]
         public int SelectedCategoryId { get; set; }
