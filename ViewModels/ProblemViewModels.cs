@@ -20,17 +20,16 @@ namespace MyWebApp.ViewModels
         public string Name { get; set; }
         [Required]
         public string Text { get; set; }
-        //[Required]
-        //public string Category { get; set; }
         [Required]
         public string Author { get; set; }
+        [Required]
+        public string Answers { get; set; }
         //[Required]
-        //IEnumerable<string> Answers { get; set; }
-
-        public IEnumerable<string> Tags { get; set; }
+        //public List<string> Tags { get; set; }
 
         private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
 
+        [Required]
         [Display(Name = "Category")]
         public int SelectedCategoryId { get; set; }
 
