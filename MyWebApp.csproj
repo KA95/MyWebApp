@@ -220,11 +220,14 @@
     <Compile Include="Models\ImageModels.cs" />
     <Compile Include="Models\LikeModels.cs" />
     <Compile Include="Models\ProblemModels.cs" />
+    <Compile Include="Repositories\AnswerRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IAnswerRepository.cs" />
     <Compile Include="Repositories\Interfaces\ICategoryRepository.cs" />
     <Compile Include="Repositories\Interfaces\IProblemRepository.cs" />
     <Compile Include="Repositories\Interfaces\IRepository.cs" />
     <Compile Include="Repositories\ProblemRepository.cs" />
+    <Compile Include="ValidationAttributes\CorrectSetOfAnswersAttribute.cs" />
     <Compile Include="ViewModels\ProblemViewModels.cs" />
     <Compile Include="Models\TagModels.cs" />
     <Compile Include="Models\UserAttemptedProblem.cs" />

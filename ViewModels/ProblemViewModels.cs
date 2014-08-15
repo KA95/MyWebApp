@@ -11,6 +11,7 @@ using Microsoft.Owin;
 using System.Web;
 using MyWebApp.Models;
 using System.Web.Mvc;
+using MyWebApp.ValidationAttributes;
 
 namespace MyWebApp.ViewModels
 {
@@ -23,6 +24,7 @@ namespace MyWebApp.ViewModels
         [Required]
         public string Author { get; set; }
         [Required]
+        [CorrectSetOfAnswers(ErrorMessage="Incorrect answer set.")]
         public string Answers { get; set; }
         //[Required]
         //public List<string> Tags { get; set; }

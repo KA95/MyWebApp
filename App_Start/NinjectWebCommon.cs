@@ -67,6 +67,7 @@ namespace MyWebApp.App_Start
             kernel.Bind<ApplicationDbContext>().ToSelf().InRequestScope();
             kernel.Bind<IProblemRepository>().To<ProblemRepository>();
             kernel.Bind<ICategoryRepository>().To<CategoryRepository>();
+            kernel.Bind<IAnswerRepository>().To<AnswerRepository>();
         }        
     }
 }

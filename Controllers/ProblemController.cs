@@ -10,21 +10,24 @@ using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using MyWebApp.Repositories.Interfaces;
+using System.Collections.ObjectModel;
 
 namespace MyWebApp.Controllers
 {
-   
+
     public class ProblemController : Controller
     {
 
         private readonly IProblemRepository repository;
         private readonly ICategoryRepository categoryRepository;
+        private readonly IAnswerRepository answerRepository;
 
 
-        public ProblemController(IProblemRepository repository, CategoryRepository categoryRepository)
+        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository)
         {
             this.repository = repository;
             this.categoryRepository = categoryRepository;
+            this.answerRepository = answerRepository;
         }
 
         private ApplicationUserManager _userManager;
@@ -40,7 +43,7 @@ namespace MyWebApp.Controllers
                 _userManager = value;
             }
         }
-    
+
         public ActionResult Index()
         {
             return View(repository.Get());
@@ -98,23 +101,19 @@ namespace MyWebApp.Controllers
 
             ViewBag.Button = "Create";
             Problem problem = new Problem();
-            CreateProblemViewModel pvm = new CreateProblemViewModel();
-            return View(pvm);
+            return View(new CreateProblemViewModel());
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult Create(CreateProblemViewModel problemView)
         {
-
-            if (problemView.Name == null || problemView.Name == "" || problemView.Text == null || problemView.Text == "")
-                RedirectToAction("Index");
+            if(ModelState.IsValidField("Answers"))
+                repository.Insert(GetProblem(problemView));
+            else
+                return View(new CreateProblemViewModel());
 
             problemView.Author = User.Identity.Name;
-
-            repository.Insert(GetProblem(problemView));
-            
-
             return RedirectToAction("Index");
         }
 
@@ -124,17 +123,29 @@ namespace MyWebApp.Controllers
 
         public Problem GetProblem(CreateProblemViewModel problemView)
         {
+
+
             Problem problem = new Problem();
             //problem.Category = categoryRepository.GetByID(problemView.SelectedCategoryId);
             problem.CategoryId = problemView.SelectedCategoryId;
             problem.Name = problemView.Name;
             problem.Text = problemView.Text;
+            string answers = problemView.Answers;
+            string[] answersArray = answers.Split(';');
+             
+            var collection  = new Collection<Answer>();
+            foreach (var ans in answersArray)
+            {
+                ans.Trim();
+                collection.Add(new Answer() { Text = ans, Problem = problem });
+            }
+            problem.CorrectAnswers = collection;
             //problem.Author = UserManager.FindByName(User.Identity.Name);
             problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
             return problem;
 
         }
 
-       
+
     }
 }

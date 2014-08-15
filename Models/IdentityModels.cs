@@ -47,6 +47,13 @@ namespace MyWebApp.Models
         {
         }
 
+        //protected override void OnModelCreating(DbModelBuilder modelBuilder)
+        //{
+        //    modelBuilder.Entity<Problem>()
+        //                .HasMany(s => s.CorrectAnswers)
+        //                .WithRequired();
+        //}
+
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();
