@@ -47,6 +47,9 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
+    <Reference Include="MarkdownDeep">
+      <HintPath>..\packages\MarkdownDeep.NET.1.5\lib\.NetFramework 3.5\MarkdownDeep.dll</HintPath>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Newtonsoft.Json, Version=4.5.0.0, Culture=neutral, PublicKeyToken=30ad4fe6b2a6aeed, processorArchitecture=MSIL">
       <HintPath>..\packages\Newtonsoft.Json.5.0.8\lib\net45\Newtonsoft.Json.dll</HintPath>
@@ -224,9 +227,13 @@
     <Compile Include="Repositories\CategoryRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAnswerRepository.cs" />
     <Compile Include="Repositories\Interfaces\ICategoryRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IUserAttemptedRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IUserSolvedRepository.cs" />
     <Compile Include="Repositories\Interfaces\IProblemRepository.cs" />
     <Compile Include="Repositories\Interfaces\IRepository.cs" />
     <Compile Include="Repositories\ProblemRepository.cs" />
+    <Compile Include="Repositories\UserAttemptedRepository.cs" />
+    <Compile Include="Repositories\UserSolvedRepository.cs" />
     <Compile Include="ValidationAttributes\CorrectSetOfAnswersAttribute.cs" />
     <Compile Include="ViewModels\ProblemViewModels.cs" />
     <Compile Include="Models\TagModels.cs" />
@@ -316,9 +323,10 @@
     <Content Include="Views\Admin\Users.cshtml" />
     <Content Include="Views\Admin\Problems.cshtml" />
     <Content Include="Views\Problem\Show.cshtml" />
-    <Content Include="Views\Problem\Create2.cshtml" />
     <Content Include="Views\User\Show.cshtml" />
     <Content Include="Views\Problem\Create.cshtml" />
+    <Content Include="Views\Problem\Edit.cshtml" />
+    <Content Include="Views\Shared\_CreateEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
@@ -366,6 +374,9 @@
   </ItemGroup>
   <ItemGroup>
     <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <ItemGroup>
+    <WCFMetadata Include="Service References\" />
   </ItemGroup>
   <PropertyGroup>
     <VisualStudioVersion Condition="'$(VisualStudioVersion)' == ''">10.0</VisualStudioVersion>

@@ -11,6 +11,8 @@ using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using MyWebApp.Repositories.Interfaces;
 using System.Collections.ObjectModel;
+using MarkdownDeep;
+using System.Text;
 
 namespace MyWebApp.Controllers
 {
@@ -21,13 +23,17 @@ namespace MyWebApp.Controllers
         private readonly IProblemRepository repository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IAnswerRepository answerRepository;
+        private readonly IUserSolvedRepository userSolvedRepository;
+        private readonly IUserAttemptedRepository userAttemptedRepository;
 
 
-        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository)
+        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository)
         {
             this.repository = repository;
             this.categoryRepository = categoryRepository;
             this.answerRepository = answerRepository;
+            this.userAttemptedRepository = userAttemptedRepository;
+            this.userSolvedRepository = userSolvedRepository;
         }
 
         private ApplicationUserManager _userManager;
@@ -51,101 +57,149 @@ namespace MyWebApp.Controllers
 
         [HttpGet]
         public ActionResult Show(int id)
-        {
+        { 
             Problem problem = repository.GetByID(id);
+            
+            Markdown md = new Markdown();
 
-            return View(problem);
+            problem.Text = md.Transform(problem.Text);
+
+            var pvm = GetProblemViewModel(problem);
+            pvm.Answers = "";
+            return View(pvm);
         }
-        /*
-        [HttpGet]
-        public ActionResult Edit(int? id)
-        {
-            ViewBag.Button = "Save changes";
-            ViewBag.Images = GetImageCollection();
-
-            ViewBag.SlideshowImages = (from image in SlideshowImageContext.SlideshowImages
-                                       where image.Slideshow.Id == id
-                                       orderby image.ImageSerialNumber
-                                       select image.Image);
-
-            return View(dbcontext.Slideshows.Find(id));
-        }
-
         [HttpPost]
-        public ActionResult Edit(Slideshow slideshow, string array)
+        [Authorize]
+        public ActionResult Show(ProblemViewModel problemView)
         {
+            int a = 0;
+            if (ModelState.IsValidField("Answers"))
+                a++;
 
-            dbcontext.Entry(slideshow).State = System.Data.Entity.EntityState.Deleted;
+            Problem problem = repository.GetByID(problemView.Id);
 
-            int[] imageOrder = JsonConvert.DeserializeObject<int[]>(array);
+            Markdown md = new Markdown();
 
-            dbcontext.SaveChanges();
+            problem.Text = md.Transform(problem.Text);
 
-            for (int i = 0; i < imageOrder.Length; i++)
-            {
-                SlideshowImage it = new SlideshowImage();
-                it.Image = dbcontext.Images.Find(imageOrder[i]);
-                it.ImageSerialNumber = i;
-                it.Slideshow = slideshow;
-                SlideshowImageContext.Entry(it).State = System.Data.Entity.EntityState.Added;
-            }
+            var pvm = GetProblemViewModel(problem);
+            pvm.Answers = "";
+            return View(pvm);
+        }
 
-            slideshow.User = User.Identity.Name;
-            dbcontext.Entry(slideshow).State = System.Data.Entity.EntityState.Added;
-            dbcontext.SaveChanges();
-            return RedirectToAction("Index");
-        }*/
         [Authorize]
         public ActionResult Create()
         {
 
             ViewBag.Button = "Create";
             Problem problem = new Problem();
-            return View(new CreateProblemViewModel());
+            return View(new ProblemViewModel());
         }
 
         [HttpPost]
         [Authorize]
-        public ActionResult Create(CreateProblemViewModel problemView)
+        public ActionResult Create(ProblemViewModel problemView)
         {
-            if(ModelState.IsValidField("Answers"))
-                repository.Insert(GetProblem(problemView));
+            if (ModelState.IsValidField("Answers"))
+                AddProblemFromView(problemView);
             else
-                return View(new CreateProblemViewModel());
+                return View(new ProblemViewModel());
 
             problemView.Author = User.Identity.Name;
             return RedirectToAction("Index");
         }
 
+        [Authorize]
+        public ActionResult Edit(int id)
+        {
 
+            ViewBag.Button = "Edit";
+            Problem problem = repository.GetByID(id);
 
+            return View(GetProblemViewModel(problem));
+        }
 
+        [HttpPost]
+        [Authorize]
+        public ActionResult Edit(ProblemViewModel problemView)
+        {
+            if (ModelState.IsValidField("Answers"))
+                UpdateProblemFromView(problemView);
+            else
+                return View(new ProblemViewModel());
 
-        public Problem GetProblem(CreateProblemViewModel problemView)
+            problemView.Author = User.Identity.Name;
+            return RedirectToAction("Index");
+        }
+
+        private ProblemViewModel GetProblemViewModel(Problem problem)
+        {
+            var pvm = new ProblemViewModel();
+            pvm.Author = problem.Author.UserName;
+            pvm.Name = problem.Name;
+            pvm.Text = problem.Text;
+            pvm.Id = problem.Id;
+            pvm.SelectedCategoryId = problem.CategoryId;
+            StringBuilder sb = new StringBuilder();
+            foreach (var ans in problem.CorrectAnswers)
+            {
+                sb.Append(ans.Text);
+                sb.Append(';');
+            }
+           // pvm.Solved=problem.UsersWhoSolved.Contains()
+            sb.Remove(sb.Length - 1, 1);
+            pvm.Answers = sb.ToString();
+            return pvm;
+        }
+
+        public void AddProblemFromView(ProblemViewModel problemView)
         {
 
 
             Problem problem = new Problem();
-            //problem.Category = categoryRepository.GetByID(problemView.SelectedCategoryId);
             problem.CategoryId = problemView.SelectedCategoryId;
             problem.Name = problemView.Name;
             problem.Text = problemView.Text;
+            problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
+            repository.Insert(problem);
+
             string answers = problemView.Answers;
             string[] answersArray = answers.Split(';');
-             
-            var collection  = new Collection<Answer>();
+
+            var collection = new Collection<Answer>();
             foreach (var ans in answersArray)
             {
                 ans.Trim();
                 collection.Add(new Answer() { Text = ans, Problem = problem });
             }
             problem.CorrectAnswers = collection;
-            //problem.Author = UserManager.FindByName(User.Identity.Name);
-            problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
-            return problem;
-
+            repository.Update(problem);
         }
 
+        public void UpdateProblemFromView(ProblemViewModel problemView)
+        {
+
+
+            Problem problem = repository.GetByID(problemView.Id);
+            problem.CategoryId = problemView.SelectedCategoryId;
+            problem.Name = problemView.Name;
+            problem.Text = problemView.Text;
+
+            while(problem.CorrectAnswers.Count!=0)
+                answerRepository.Delete(problem.CorrectAnswers.ElementAt(0));
+
+            problem.CorrectAnswers.Clear();
+         
+            string answers = problemView.Answers;
+            string[] answersArray = answers.Split(';');
+
+            foreach (var ans in answersArray)
+            {
+                ans.Trim();
+                problem.CorrectAnswers.Add(new Answer() { Text = ans, Problem = problem , ProblemId=problem.Id });
+            }
+            repository.Update(problem);
+        }
 
     }
 }

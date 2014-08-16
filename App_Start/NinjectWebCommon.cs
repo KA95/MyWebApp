@@ -68,6 +68,8 @@ namespace MyWebApp.App_Start
             kernel.Bind<IProblemRepository>().To<ProblemRepository>();
             kernel.Bind<ICategoryRepository>().To<CategoryRepository>();
             kernel.Bind<IAnswerRepository>().To<AnswerRepository>();
+            kernel.Bind<IUserSolvedRepository>().To<UserSolvedRepository>();
+            kernel.Bind<IUserAttemptedRepository>().To<UserAttemptedRepository>();
         }        
     }
 }

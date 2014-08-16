@@ -15,7 +15,7 @@ using MyWebApp.ValidationAttributes;
 
 namespace MyWebApp.ViewModels
 {
-    public class CreateProblemViewModel
+    public class ProblemViewModel
     {
         [Required]
         public string Name { get; set; }
@@ -24,10 +24,12 @@ namespace MyWebApp.ViewModels
         [Required]
         public string Author { get; set; }
         [Required]
-        [CorrectSetOfAnswers(ErrorMessage="Incorrect answer set.")]
+        [CorrectSetOfAnswers]
         public string Answers { get; set; }
         //[Required]
         //public List<string> Tags { get; set; }
+        public int Id { get; set; }
+        public bool Solved { get; set; }
 
         private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
 

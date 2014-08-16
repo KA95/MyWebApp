@@ -10,7 +10,10 @@
             <thead>
                 <tr>
                     <th>Problem</th>
-                    <th>User</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                    <th>Likes</th>
+                    <th>Dislikes</th>
                     <th>Solved</th>
                 </tr>
             </thead>
@@ -24,7 +27,16 @@
                         @problem.Author.UserName.ToString()
                     </th>
                     <th>
-                       @problem.UsersWhoSolved.Count()
+                        @problem.Category.Name.ToString()
+                    </th>
+                    <th>
+                        @problem.Likes.Count()
+                    </th>
+                    <th>
+                        @problem.Dislikes.Count()
+                    </th>
+                    <th>
+                        @problem.UsersWhoSolved.Count()
                     </th>
                 </tr>
             }
