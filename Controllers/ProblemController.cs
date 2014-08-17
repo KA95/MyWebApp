@@ -25,15 +25,20 @@ namespace MyWebApp.Controllers
         private readonly IAnswerRepository answerRepository;
         private readonly IUserSolvedRepository userSolvedRepository;
         private readonly IUserAttemptedRepository userAttemptedRepository;
+        private readonly IImageRepository imageRepository;
+        private readonly IVideoRepository videoRepository;
+        private readonly ITagRepository tagRepository;
 
-
-        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository)
+        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository,IVideoRepository videoRepository, ITagRepository tagRepository)
         {
             this.repository = repository;
             this.categoryRepository = categoryRepository;
             this.answerRepository = answerRepository;
             this.userAttemptedRepository = userAttemptedRepository;
             this.userSolvedRepository = userSolvedRepository;
+            this.tagRepository = tagRepository;
+            this.imageRepository = imageRepository;
+            this.videoRepository = videoRepository;
         }
 
         private ApplicationUserManager _userManager;
@@ -161,6 +166,8 @@ namespace MyWebApp.Controllers
             pvm.Name = problem.Name;
             pvm.Text = problem.Text;
             pvm.Id = problem.Id;
+            pvm.Images = (from image in problem.CorrectAnswers
+                               select image.Text);
             pvm.SelectedCategoryId = problem.CategoryId;
             StringBuilder sb = new StringBuilder();
             foreach (var ans in problem.CorrectAnswers)
@@ -184,6 +191,11 @@ namespace MyWebApp.Controllers
             problem.Text = problemView.Text;
             problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
             repository.Insert(problem);
+            problem.ImagesInside = new Collection<Image>();
+            foreach(var image in problemView.Images)
+            {
+                problem.ImagesInside.Add(new Image(){URL = image , ProblemId = problem.Id, UserId = problem.AuthorId});
+            }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             repository.Update(problem);
         }
@@ -196,6 +208,13 @@ namespace MyWebApp.Controllers
             problem.Text = problemView.Text;
             while (problem.CorrectAnswers.Count != 0)
                 answerRepository.Delete(problem.CorrectAnswers.ElementAt(0));
+            while (problem.ImagesInside.Count != 0)
+                imageRepository.Delete(problem.ImagesInside.ElementAt(0));
+            problem.ImagesInside = new Collection<Image>();
+            foreach (var image in problemView.Images)
+            {
+                problem.ImagesInside.Add(new Image() { URL = image, ProblemId = problem.Id, UserId = problem.AuthorId });
+            }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             repository.Update(problem);
         }

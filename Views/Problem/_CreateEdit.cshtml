@@ -1,0 +1,80 @@
+﻿@model MyWebApp.ViewModels.ProblemViewModel
+<ul class="nav nav-tabs" style="margin-bottom: 15px;">
+    <li class="active"><a href="#Main" data-toggle="tab">Requied info</a></li>
+    <li class=""><a href="#media" data-toggle="tab">Photos&Videos</a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade active in" id="Main">
+        <hr />
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+        <div class="form-group">
+            @Html.LabelFor(model => model.Name, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Answers, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Answers, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Answers, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Text, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextAreaFor(model => model.Text, 10, 10, new { data_provide = "markdown", id = "content", @style = "max-width:100%", @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.Text, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.SelectedCategoryId, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.SelectedCategoryId, Model.Categories, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.SelectedCategoryId, "", new { @class = "text-danger" })
+            </div>
+        </div>
+    </div>
+    <div class="tab-pane fade" id="media">
+        <hr />
+        @*@foreach(var im in Model.Images)
+        {
+            <img src=@im>
+            <p>@im</p>
+        }*@
+        @*<form id="fileupload" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data">
+            <!-- Redirect browsers with JavaScript disabled to the origin page -->
+            <noscript><input type="hidden" name="redirect" value="http://localhost:49287/Problem/Create"></noscript>
+            <!-- The fileupload-buttonbar contains buttons to add/delete files and start/cancel the upload -->
+            <div class="fileupload-buttonbar">
+                <div class="fileupload-buttons">
+                    <!-- The fileinput-button span is used to style the file input field as button -->
+                    <span class="fileinput-button">
+                        <span>Add files...</span>
+                        <input type="file" name="files[]" multiple>
+                    </span>
+                    <button type="submit" class="start">Start upload</button>
+                    <button type="reset" class="cancel">Cancel upload</button>
+                    <button type="button" class="delete">Delete</button>
+                    <input type="checkbox" class="toggle">
+                    <!-- The global file processing state -->
+                    <span class="fileupload-process"></span>
+                </div>
+                <!-- The global progress state -->
+                <div class="fileupload-progress fade" style="display:none">
+                    <!-- The global progress bar -->
+                    <div class="progress" role="progressbar" aria-valuemin="0" aria-valuemax="100"></div>
+                    <!-- The extended global progress state -->
+                    <div class="progress-extended">&nbsp;</div>
+                </div>
+            </div>
+            <!-- The table listing the files available for upload/download -->
+            <table role="presentation"><tbody class="files"></tbody></table>
+        </form>*@
+    </div>
+</div>

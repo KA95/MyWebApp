@@ -12,6 +12,7 @@
 {
     @Html.AntiForgeryToken()
     <div class="form-horizontal">
+
         @Html.Partial("_CreateEdit", Model)
 
         <div class="form-group">
@@ -21,6 +22,7 @@
         </div>
     </div>
 }
+
 
 <div>
     @Html.ActionLink("Back to List", "Index")

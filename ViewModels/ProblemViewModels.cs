@@ -26,8 +26,11 @@ namespace MyWebApp.ViewModels
         [Required]
         [CorrectSetOfAnswers]
         public string Answers { get; set; }
-        //[Required]
-        //public List<string> Tags { get; set; }
+
+        public IEnumerable<string> Tags { get; set; }
+        public IEnumerable<string> Images { get; set; }
+        public IEnumerable<string> Videos { get; set; }
+
         public int Id { get; set; }
         public bool Solved { get; set; }
 

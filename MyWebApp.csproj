@@ -225,15 +225,21 @@
     <Compile Include="Models\ProblemModels.cs" />
     <Compile Include="Repositories\AnswerRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAnswerRepository.cs" />
     <Compile Include="Repositories\Interfaces\ICategoryRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IImageRepository.cs" />
+    <Compile Include="Repositories\Interfaces\ITagRepository.cs" />
     <Compile Include="Repositories\Interfaces\IUserAttemptedRepository.cs" />
     <Compile Include="Repositories\Interfaces\IUserSolvedRepository.cs" />
     <Compile Include="Repositories\Interfaces\IProblemRepository.cs" />
     <Compile Include="Repositories\Interfaces\IRepository.cs" />
+    <Compile Include="Repositories\Interfaces\IVideoRepository.cs" />
     <Compile Include="Repositories\ProblemRepository.cs" />
+    <Compile Include="Repositories\TagRepository.cs" />
     <Compile Include="Repositories\UserAttemptedRepository.cs" />
     <Compile Include="Repositories\UserSolvedRepository.cs" />
+    <Compile Include="Repositories\VideoRepository.cs" />
     <Compile Include="ValidationAttributes\CorrectSetOfAnswersAttribute.cs" />
     <Compile Include="ViewModels\ProblemViewModels.cs" />
     <Compile Include="Models\TagModels.cs" />
@@ -265,6 +271,10 @@
     <Content Include="Content\bootstrap-yeti.min.css" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\bootstrap.min.css" />
+    <Content Include="Content\jquery.fileupload-noscript.css" />
+    <Content Include="Content\jquery.fileupload-ui-noscript.css" />
+    <Content Include="Content\jquery.fileupload-ui.css" />
+    <Content Include="Content\jquery.fileupload.css" />
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
@@ -275,10 +285,21 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
+    <Content Include="Scripts\jquery.fileupload-angular.js" />
+    <Content Include="Scripts\jquery.fileupload-audio.js" />
+    <Content Include="Scripts\jquery.fileupload-image.js" />
+    <Content Include="Scripts\jquery.fileupload-jquery-ui.js" />
+    <Content Include="Scripts\jquery.fileupload-process.js" />
+    <Content Include="Scripts\jquery.fileupload-ui.js" />
+    <Content Include="Scripts\jquery.fileupload-validate.js" />
+    <Content Include="Scripts\jquery.fileupload-video.js" />
+    <Content Include="Scripts\jquery.fileupload.js" />
+    <Content Include="Scripts\jquery.iframe-transport.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
+    <Content Include="Scripts\main.js" />
     <Content Include="Scripts\markdown.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\respond.js" />
@@ -326,7 +347,7 @@
     <Content Include="Views\User\Show.cshtml" />
     <Content Include="Views\Problem\Create.cshtml" />
     <Content Include="Views\Problem\Edit.cshtml" />
-    <Content Include="Views\Shared\_CreateEdit.cshtml" />
+    <Content Include="Views\Problem\_CreateEdit.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
