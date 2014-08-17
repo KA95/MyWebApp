@@ -142,14 +142,19 @@ namespace MyWebApp.Controllers
 
             ViewBag.Button = "Edit";
             Problem problem = repository.GetByID(id);
+            var pvm = GetProblemViewModel(problem);
+            if (pvm.Images == null)
+                pvm.Images = new Collection<string>();
 
-            return View(GetProblemViewModel(problem));
+            return View(pvm);
         }
 
         [HttpPost]
         [Authorize]
         public ActionResult Edit(ProblemViewModel problemView)
         {
+            if (problemView.Images == null)
+                problemView.Images = new Collection<string>();
             if (ModelState.IsValidField("Answers"))
                 UpdateProblemFromView(problemView);
             else
