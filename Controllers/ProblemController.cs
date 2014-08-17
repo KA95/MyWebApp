@@ -120,7 +120,7 @@ namespace MyWebApp.Controllers
 
             ViewBag.Button = "Create";
             Problem problem = new Problem();
-            return View(new ProblemViewModel());
+            return View(new ProblemViewModel() { Images = new Collection<string>() });
         }
 
         [HttpPost]
@@ -130,7 +130,7 @@ namespace MyWebApp.Controllers
             if (ModelState.IsValidField("Answers"))
                 AddProblemFromView(problemView);
             else
-                return View(new ProblemViewModel());
+                return View(problemView);
 
             problemView.Author = User.Identity.Name;
             return RedirectToAction("Index");
@@ -153,7 +153,7 @@ namespace MyWebApp.Controllers
             if (ModelState.IsValidField("Answers"))
                 UpdateProblemFromView(problemView);
             else
-                return View(new ProblemViewModel());
+                return View(problemView);
 
             problemView.Author = User.Identity.Name;
             return RedirectToAction("Index");
