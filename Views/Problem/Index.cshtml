@@ -15,6 +15,7 @@
                     <th>Likes</th>
                     <th>Dislikes</th>
                     <th>Solved</th>
+                    <th>Attempted</th>
                 </tr>
             </thead>
             @foreach (var problem in Model)
@@ -37,6 +38,9 @@
                     </th>
                     <th>
                         @problem.UsersWhoSolved.Count()
+                    </th>
+                    <th>
+                        @problem.UsersWhoAttempted.Count()
                     </th>
                 </tr>
             }

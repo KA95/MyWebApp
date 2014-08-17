@@ -57,14 +57,22 @@ namespace MyWebApp.Controllers
 
         [HttpGet]
         public ActionResult Show(int id)
-        { 
+        {
             Problem problem = repository.GetByID(id);
-            
+
             Markdown md = new Markdown();
 
             problem.Text = md.Transform(problem.Text);
 
+            IEnumerable<UserSolvedProblem> usersSolved = userSolvedRepository.Get(m => m.ProblemId == problem.Id);
+            IEnumerable<UserSolvedProblem> userProblem =
+                from userSolution in usersSolved
+                where userSolution.User.UserName == User.Identity.Name
+                select userSolution;
+
+            //usersSolved.Contains()
             var pvm = GetProblemViewModel(problem);
+            pvm.Solved = userProblem.Count() != 0;
             pvm.Answers = "";
             return View(pvm);
         }
@@ -73,19 +81,33 @@ namespace MyWebApp.Controllers
         public ActionResult Show(ProblemViewModel problemView)
         {
             int a = 0;
-            if (ModelState.IsValidField("Answers"))
-                a++;
-
             Problem problem = repository.GetByID(problemView.Id);
+            var pvm = GetProblemViewModel(problem);
+            pvm.Solved = false;
+            if (ModelState.IsValidField("Answers"))
+                if(AreEqual(GetAnswersFromString(problemView.Answers,problem),problem.CorrectAnswers))
+                {
+                    userSolvedRepository.Insert(new UserSolvedProblem(){ UserId = UserManager.FindByName(User.Identity.Name).Id , ProblemId= problem.Id});
+                    pvm.Solved = true;
+                }
+                else
+                {
+                    userAttemptedRepository.Insert(new UserAttemptedProblem() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
+                }
+
 
             Markdown md = new Markdown();
 
             problem.Text = md.Transform(problem.Text);
 
-            var pvm = GetProblemViewModel(problem);
+       
+            
+           
             pvm.Answers = "";
             return View(pvm);
         }
+
+       
 
         [Authorize]
         public ActionResult Create()
@@ -146,7 +168,7 @@ namespace MyWebApp.Controllers
                 sb.Append(ans.Text);
                 sb.Append(';');
             }
-           // pvm.Solved=problem.UsersWhoSolved.Contains()
+            // pvm.Solved=problem.UsersWhoSolved.Contains()
             sb.Remove(sb.Length - 1, 1);
             pvm.Answers = sb.ToString();
             return pvm;
@@ -162,8 +184,24 @@ namespace MyWebApp.Controllers
             problem.Text = problemView.Text;
             problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
             repository.Insert(problem);
+            problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
+            repository.Update(problem);
+        }
 
-            string answers = problemView.Answers;
+        public void UpdateProblemFromView(ProblemViewModel problemView)
+        {
+            Problem problem = repository.GetByID(problemView.Id);
+            problem.CategoryId = problemView.SelectedCategoryId;
+            problem.Name = problemView.Name;
+            problem.Text = problemView.Text;
+            while (problem.CorrectAnswers.Count != 0)
+                answerRepository.Delete(problem.CorrectAnswers.ElementAt(0));
+            problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
+            repository.Update(problem);
+        }
+
+        private ICollection<Answer> GetAnswersFromString(string answers, Problem problem)
+        {
             string[] answersArray = answers.Split(';');
 
             var collection = new Collection<Answer>();
@@ -172,34 +210,23 @@ namespace MyWebApp.Controllers
                 ans.Trim();
                 collection.Add(new Answer() { Text = ans, Problem = problem });
             }
-            problem.CorrectAnswers = collection;
-            repository.Update(problem);
+             return collection;
         }
 
-        public void UpdateProblemFromView(ProblemViewModel problemView)
+        private bool AreEqual(ICollection<Answer> collection1, ICollection<Answer> collection2)
         {
-
-
-            Problem problem = repository.GetByID(problemView.Id);
-            problem.CategoryId = problemView.SelectedCategoryId;
-            problem.Name = problemView.Name;
-            problem.Text = problemView.Text;
-
-            while(problem.CorrectAnswers.Count!=0)
-                answerRepository.Delete(problem.CorrectAnswers.ElementAt(0));
-
-            problem.CorrectAnswers.Clear();
-         
-            string answers = problemView.Answers;
-            string[] answersArray = answers.Split(';');
-
-            foreach (var ans in answersArray)
-            {
-                ans.Trim();
-                problem.CorrectAnswers.Add(new Answer() { Text = ans, Problem = problem , ProblemId=problem.Id });
-            }
-            repository.Update(problem);
+            if (collection1.Count != collection2.Count) return false;
+          
+            ICollection<string> c1= new Collection<string>();
+            ICollection<string> c2= new Collection<string>();
+            foreach(var item in collection1)
+                c1.Add(item.Text);
+            foreach(var item in collection2)
+                c2.Add(item.Text);
+            if(c1.Except(c2).ToList().Count==0 && c2.Except(c1).ToList().Count==0)
+                return true;
+            else
+                return false;
         }
-
     }
 }
