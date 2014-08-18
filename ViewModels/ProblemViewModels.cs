@@ -20,6 +20,7 @@ namespace MyWebApp.ViewModels
         [Required]
         public string Name { get; set; }
         [Required]
+        [AllowHtml]
         public string Text { get; set; }
         [Required]
         public string Author { get; set; }

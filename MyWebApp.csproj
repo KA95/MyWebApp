@@ -39,11 +39,13 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="Backload">
-      <HintPath>..\packages\Backload.1.9.3.0\lib\net45\Backload.dll</HintPath>
+    <Reference Include="Backload, Version=1.9.3.1, Culture=neutral, PublicKeyToken=02eaf42ab375d363, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Backload.1.9.3.1\lib\net45\Backload.dll</HintPath>
     </Reference>
-    <Reference Include="Backload.Contracts">
-      <HintPath>..\packages\Backload.1.9.3.0\lib\net45\Backload.Contracts.dll</HintPath>
+    <Reference Include="Backload.Contracts, Version=1.9.3.1, Culture=neutral, PublicKeyToken=079b4834180abdf7, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\Backload.1.9.3.1\lib\net45\Backload.Contracts.dll</HintPath>
     </Reference>
     <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -198,6 +200,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\MarkdownHelper.cs" />
     <Compile Include="Migrations\201408081506381_mig.cs" />
     <Compile Include="Migrations\201408081506381_mig.Designer.cs">
       <DependentUpon>201408081506381_mig.cs</DependentUpon>
@@ -374,12 +377,8 @@
     <Content Include="Content\FileUpload\img\loading.gif" />
     <Content Include="Content\FileUpload\img\progressbar.gif" />
     <Content Include="Content\FileUpload\img\progressblue.gif" />
-    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload-noscript.css" />
-    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload-ui-noscript.css" />
-    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload-ui.css" />
-    <Content Include="Content\jQuery.FileUpload\css\jquery.fileupload.css" />
-    <Content Include="Content\jQuery.FileUpload\img\loading.gif" />
-    <Content Include="Content\jQuery.FileUpload\img\progressbar.gif" />
+    <Content Include="Content\styles.css" />
+    <Content Include="Content\themes\base\images\animated-overlay.gif" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -411,6 +410,7 @@
     <Content Include="Content\themes\base\jquery.ui.tabs.css" />
     <Content Include="Content\themes\base\jquery.ui.theme.css" />
     <Content Include="Content\themes\base\jquery.ui.tooltip.css" />
+    <Content Include="Content\themes\base\minified\images\animated-overlay.gif" />
     <Content Include="Content\themes\base\minified\images\ui-bg_flat_0_aaaaaa_40x100.png" />
     <Content Include="Content\themes\base\minified\images\ui-bg_flat_75_ffffff_40x100.png" />
     <Content Include="Content\themes\base\minified\images\ui-bg_glass_55_fbf9ee_1x400.png" />
@@ -443,6 +443,11 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Resources\1.png" />
+    <Content Include="Resources\2.png" />
+    <Content Include="Resources\3.png" />
+    <Content Include="Resources\4.png" />
+    <Content Include="Resources\5.png" />
     <Content Include="Scripts\bootstrap-markdown.js" />
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
@@ -475,19 +480,6 @@
     <Content Include="Scripts\jquery-1.10.2.js" />
     <Content Include="Scripts\jquery-1.10.2.min.js" />
     <None Include="Scripts\jquery.validate-vsdoc.js" />
-    <Content Include="Scripts\jquery-ui-1.9.0.js" />
-    <Content Include="Scripts\jquery-ui-1.9.0.min.js" />
-    <Content Include="Scripts\jQuery.FileUpload\cors\jquery.postmessage-transport.js" />
-    <Content Include="Scripts\jQuery.FileUpload\cors\jquery.xdr-transport.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-audio.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-image.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-jquery-ui.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-process.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-ui.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-validate.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload-video.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.fileupload.js" />
-    <Content Include="Scripts\jQuery.FileUpload\jquery.iframe-transport.js" />
     <Content Include="Scripts\jquery.validate.js" />
     <Content Include="Scripts\jquery.validate.min.js" />
     <Content Include="Scripts\jquery.validate.unobtrusive.js" />
@@ -542,6 +534,7 @@
     <Content Include="Views\Problem\Edit.cshtml" />
     <Content Include="Views\Problem\_CreateEdit.cshtml" />
     <Content Include="Views\BackloadDemo\Index.cshtml" />
+    <Content Include="Views\Problem\Tutorial.cshtml" />
     <None Include="Web.Backload.Default.config" />
     <None Include="Web.Backload.xsd">
       <SubType>Designer</SubType>
@@ -549,6 +542,7 @@
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Files\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="fonts\glyphicons-halflings-regular.woff" />

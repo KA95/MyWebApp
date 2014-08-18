@@ -1,0 +1,205 @@
+﻿@charset "UTF-8";
+/*
+ * jQuery File Upload Plugin CSS Example 1.1.1
+ * https://github.com/blueimp/jQuery-File-Upload
+ *
+ * Copyright 2012, Sebastian Tschan
+ * https://blueimp.net
+ *
+ * Licensed under the MIT license:
+ * http://www.opensource.org/licenses/MIT
+ */
+
+body {
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  line-height: 18px;
+  width: 960px;
+  margin: 10px auto;
+  background-color:#606060;
+  color:#d0d0d0
+}
+h1 {
+    color:#e0e0e0
+}
+h1>* {
+    color:#c0c0c0;
+    font-size:12px;
+    margin-left:200px;
+}
+a {
+  color: #08C;
+  text-decoration: none;
+}
+a:hover,
+.active a {
+  color: #005580;
+  text-decoration: underline;
+}
+td {
+  padding: 5px;
+}
+img {
+  border: 0;
+}
+.nav-collapse,
+ul.nav,
+ul.nav li {
+  display: inline-block;
+  margin-right: 10px;
+}
+.navbar .brand {
+  font-size: 16px;
+}
+.row {
+  zoom: 1;
+}
+.row:before, .row:after {
+  display: table;
+  content: "";
+}
+.row:after {
+  clear: both;
+}
+.span5, .span7 {
+  width: auto;
+  float: left;
+}
+
+
+/* Example page JQuery file upload plugin styles */
+#demo-fup-table {
+    border-collapse:collapse;
+}
+tbody.files td.delete {
+  white-space: nowrap;
+}
+tbody.files td.name {
+    min-width: 300px;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+tbody.files td.size {
+    min-width: 80px;
+    text-align:right;
+    padding-left:10px; 
+    padding-right:10px;
+}
+tbody.files td.action {
+    min-width:120px; 
+    padding-left:10px; 
+    padding-right:10px;
+}
+tbody.files .progress {
+  width: 155px;
+}
+.files .ui-progressbar-value, 
+.fileupload-buttonbar .ui-progressbar-value {
+  background: url(FileUpload/img/progressblue.gif);
+}
+.fileupload-progress {
+  margin-left:75px;
+}
+.progress-extended {
+    margin-top:2px;
+    font-size:10px;
+  color:#b0b0b0
+}
+footer, #footer  {
+    background:none;
+}
+
+/* Description */
+span.bl {
+    color: #0094ff;
+    font-size: larger;
+}
+h2 {
+ color:#808080;
+}
+h4 {
+    color:#909090
+}
+h5 {
+    color:#909090;
+    padding:0px;
+    margin:0px;
+    line-height:10px;
+}
+.theme-switcher-info {
+    position: absolute;
+    font-size: 10px;
+    top: 10px;
+    right: 20px;
+    color: #a0a0a0;
+}
+.theme-switcher {
+    position: absolute;
+    right: 20px;
+    top: 30px;
+    font-size: 12px;
+}
+.ex-head {
+    background-color: #404040;
+    padding: 20px;
+    padding-bottom: 5px;
+    position: relative;
+}
+.ex-fup {
+    background-color:#505050; padding:20px; padding-top:30px;
+}
+.ex-desc {
+    color:#c0c0c0; margin-bottom:15px; font-weight:normal;
+}
+.ex-desc > a, .ex-desc > a:visited{
+    color:#c0c0c0;
+}
+.ex-desc > a:hover:hover {
+    color:#f0f0f0;
+}
+.ex-inf {
+    background-color: #404040;
+    padding: 5px 20px 5px 20px;
+}
+p.licenses {
+    font-size:11px;
+}
+p.licenses > a, p.licenses > a:visited{
+    color:#ffffff;
+    text-decoration:none;
+}
+p.licenses > a:hover {
+    color:#a0a0a0;
+}
+.ex-imp {
+    color: red;
+    font-size: larger;
+}
+
+
+/* Fix for IE 6: */
+* html .nav-collapse,
+* html ul.nav,
+* html ul.nav li {
+  display: inline;
+}
+* html .navbar-fixed-top {
+  margin-bottom: 35px;
+}
+
+/* Fix for IE 7: */
+* + html .nav-collapse,
+* + html ul.nav,
+* + html ul.nav li {
+  display: inline;
+}
+* + html .navbar-fixed-top {
+  margin-bottom: 35px;
+}
+
+@media (max-width: 979px) {
+  body {
+    width: auto;
+    padding: 10px;
+  }
+}

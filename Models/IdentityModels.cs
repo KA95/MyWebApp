@@ -45,6 +45,7 @@ namespace MyWebApp.Models
         public ApplicationDbContext()
             : base("DefaultConnection", throwIfV1Schema: false)
         {
+            Database.SetInitializer<ApplicationDbContext>(new CreateDatabaseIfNotExists<ApplicationDbContext>());
         }
 
         //protected override void OnModelCreating(DbModelBuilder modelBuilder)

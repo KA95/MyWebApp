@@ -29,7 +29,7 @@ namespace MyWebApp.Controllers
         private readonly IVideoRepository videoRepository;
         private readonly ITagRepository tagRepository;
 
-        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository,IVideoRepository videoRepository, ITagRepository tagRepository)
+        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, IVideoRepository videoRepository, ITagRepository tagRepository)
         {
             this.repository = repository;
             this.categoryRepository = categoryRepository;
@@ -66,7 +66,6 @@ namespace MyWebApp.Controllers
             Problem problem = repository.GetByID(id);
 
             Markdown md = new Markdown();
-
             problem.Text = md.Transform(problem.Text);
 
             IEnumerable<UserSolvedProblem> usersSolved = userSolvedRepository.Get(m => m.ProblemId == problem.Id);
@@ -81,6 +80,7 @@ namespace MyWebApp.Controllers
             pvm.Answers = "";
             return View(pvm);
         }
+
         [HttpPost]
         [Authorize]
         public ActionResult Show(ProblemViewModel problemView)
@@ -90,9 +90,9 @@ namespace MyWebApp.Controllers
             var pvm = GetProblemViewModel(problem);
             pvm.Solved = false;
             if (ModelState.IsValidField("Answers"))
-                if(AreEqual(GetAnswersFromString(problemView.Answers,problem),problem.CorrectAnswers))
+                if (AreEqual(GetAnswersFromString(problemView.Answers, problem), problem.CorrectAnswers))
                 {
-                    userSolvedRepository.Insert(new UserSolvedProblem(){ UserId = UserManager.FindByName(User.Identity.Name).Id , ProblemId= problem.Id});
+                    userSolvedRepository.Insert(new UserSolvedProblem() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
                     pvm.Solved = true;
                 }
                 else
@@ -105,14 +105,15 @@ namespace MyWebApp.Controllers
 
             problem.Text = md.Transform(problem.Text);
 
-       
-            
-           
             pvm.Answers = "";
             return View(pvm);
         }
 
-       
+
+        public ActionResult Tutorial()
+        {
+            return View();
+        }
 
         [Authorize]
         public ActionResult Create()
@@ -172,7 +173,7 @@ namespace MyWebApp.Controllers
             pvm.Text = problem.Text;
             pvm.Id = problem.Id;
             pvm.Images = (from image in problem.CorrectAnswers
-                               select image.Text);
+                          select image.Text);
             pvm.SelectedCategoryId = problem.CategoryId;
             StringBuilder sb = new StringBuilder();
             foreach (var ans in problem.CorrectAnswers)
@@ -197,10 +198,11 @@ namespace MyWebApp.Controllers
             problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
             repository.Insert(problem);
             problem.ImagesInside = new Collection<Image>();
-            foreach(var image in problemView.Images)
-            {
-                problem.ImagesInside.Add(new Image(){URL = image , ProblemId = problem.Id, UserId = problem.AuthorId});
-            }
+            if (problemView.Images != null)
+                foreach (var image in problemView.Images)
+                {
+                    problem.ImagesInside.Add(new Image() { URL = image, ProblemId = problem.Id, UserId = problem.AuthorId });
+                }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             repository.Update(problem);
         }
@@ -234,23 +236,24 @@ namespace MyWebApp.Controllers
                 ans.Trim();
                 collection.Add(new Answer() { Text = ans, Problem = problem });
             }
-             return collection;
+            return collection;
         }
 
         private bool AreEqual(ICollection<Answer> collection1, ICollection<Answer> collection2)
         {
             if (collection1.Count != collection2.Count) return false;
-          
-            ICollection<string> c1= new Collection<string>();
-            ICollection<string> c2= new Collection<string>();
-            foreach(var item in collection1)
-                c1.Add(item.Text);
-            foreach(var item in collection2)
-                c2.Add(item.Text);
-            if(c1.Except(c2).ToList().Count==0 && c2.Except(c1).ToList().Count==0)
-                return true;
-            else
-                return false;
+
+            IEnumerable<string> c1 = from ans in collection1
+                                     select ans.Text;
+            IEnumerable<string> c2 = from ans in collection2
+                                     select ans.Text;
+
+
+            foreach (var ans in c1)
+            {
+                if (!c2.Contains(ans)) return false;
+            }
+            return true;
         }
     }
 }
