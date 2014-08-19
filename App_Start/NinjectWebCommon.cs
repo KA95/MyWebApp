@@ -73,6 +73,8 @@ namespace MyWebApp.App_Start
             kernel.Bind<IVideoRepository>().To<VideoRepository>();
             kernel.Bind<IImageRepository>().To<ImageRepository>();
             kernel.Bind<ITagRepository>().To<TagRepository>();
+            kernel.Bind<ILikeRepository>().To<LikeRepository>();
+            kernel.Bind<IDislikeRepository>().To<DislikeRepository>();
         }        
     }
 }

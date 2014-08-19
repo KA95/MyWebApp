@@ -4,38 +4,82 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+<script src="~/Scripts/jquery-1.10.2.js"></script>
 <h2>Show</h2>
-<h1>@Model.Name</h1>
+<h1 id="title">@Model.Name</h1>
 @Html.Markdown(@Model.Text)
-@if(Model.Solved!=true)
+
+@Html.Hidden("problemId", @Model.Id, new { @id = "problemId" })
+<br/>
+<a id="like" class="btn btn-success">Like <span class="badge" id="likeCount">@Model.Likes</span></a>
+<a id="dislike" class="btn btn-danger">Dislike <span class="badge" id="dislikeCount">@Model.Dislikes</span></a>
+
+<br />
+@if (Model.Solved != true)
 {
-<div class="well">
-    @using (Html.BeginForm("Show", "Problem"))
-    {
+    <div class="well">
+        @using (Html.BeginForm("Show", "Problem"))
+        {
 
-        <div class="form-horizontal">
-            <div class="form-group">
-                @Html.LabelFor(model => model.Answers, "Your answer", htmlAttributes: new { @class = "control-label col-md-2" })
-                <div class="col-md-10">
-                    @Html.EditorFor(model => model.Answers, new { htmlAttributes = new { @class = "form-control" } })
-                    @Html.ValidationMessageFor(model => model.Answers, "", new { @class = "text-danger" })
+            <div class="form-horizontal">
+                <div class="form-group">
+                    @Html.LabelFor(model => model.Answers, "Your answer", htmlAttributes: new { @class = "control-label col-md-2" })
+                    <div class="col-md-10">
+                        @Html.EditorFor(model => model.Answers, new { htmlAttributes = new { @class = "form-control" } })
+                        @Html.ValidationMessageFor(model => model.Answers, "", new { @class = "text-danger" })
+                    </div>
                 </div>
-            </div>
-            <div class="form-group">
-                @Html.HiddenFor(model => model.Id)
-            </div>
-            <div class="form-group">
-                <div class="col-md-offset-2 col-md-10">
-                    <input type="submit" value="Send solution" class="btn btn-default" />
+                <div class="form-group">
+                    @Html.HiddenFor(model => model.Id)
                 </div>
+                <div class="form-group">
+                    <div class="col-md-offset-2 col-md-10">
+                        <input type="submit" value="Send solution" class="btn btn-default" />
+                    </div>
+                </div>
+
             </div>
-
-        </div>
-    }
-</div>
-
+        }
+    </div>
 }
+
 else
 {
     <div class="jumbotron"> You solved it!</div>
 }
+<script type="text/javascript">
+
+    $(document).ready(function () {
+        $('#like').click(function () {
+            var id = $('#problemId').val();
+            $.ajax({
+                dataType: 'json',
+                type: "POST",
+                url: "/Problem/Like/",
+                data: 'problemId=' + id,
+                success:
+                    function (data) {
+                        $('#likeCount').html(data.l);
+                        $('#dislikeCount').html(data.d);
+                    }
+            });
+        });
+
+        $('#dislike').click(function () {
+            var id = $('#problemId').val();
+            $.ajax({
+                dataType: 'json',
+                type: "POST",
+                url: "/Problem/Dislike/",
+                data: 'problemId=' + id,
+                success:
+                    function (data) {
+                        $('#likeCount').html(data.l);
+                        $('#dislikeCount').html(data.d);
+                    }
+            });
+        });
+    });
+
+
+</script>

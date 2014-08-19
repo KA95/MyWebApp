@@ -28,8 +28,10 @@ namespace MyWebApp.Controllers
         private readonly IImageRepository imageRepository;
         private readonly IVideoRepository videoRepository;
         private readonly ITagRepository tagRepository;
+        private readonly ILikeRepository likeRepository;
+        private readonly IDislikeRepository dislikeRepository;
 
-        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, IVideoRepository videoRepository, ITagRepository tagRepository)
+        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, IVideoRepository videoRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository)
         {
             this.repository = repository;
             this.categoryRepository = categoryRepository;
@@ -39,6 +41,8 @@ namespace MyWebApp.Controllers
             this.tagRepository = tagRepository;
             this.imageRepository = imageRepository;
             this.videoRepository = videoRepository;
+            this.likeRepository = likeRepository;
+            this.dislikeRepository = dislikeRepository;
         }
 
         private ApplicationUserManager _userManager;
@@ -165,6 +169,87 @@ namespace MyWebApp.Controllers
             return RedirectToAction("Index");
         }
 
+        [HttpPost]
+        public JsonResult Like(int problemId)
+        {
+            Problem problem=repository.GetByID(problemId);
+            var likes = problem.Likes.Count;
+            var dislikes = problem.Dislikes.Count;
+
+            bool haslike=likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
+            bool hasdislike=dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
+
+            int dislikeId=0;
+            int likeId=0;
+
+            if (haslike) likeId=likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
+            if (hasdislike) dislikeId=dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
+
+            if(haslike)
+            {
+                likeRepository.Delete(likeId);
+                likes--;
+            }
+            else
+            {
+                if(hasdislike)
+                {          
+                    likeRepository.Insert(new Like() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    dislikeRepository.Delete(dislikeId);
+                    dislikes--;
+                    likes++;
+                }
+                else
+                {
+                    likeRepository.Insert(new Like() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    likes++;
+                }
+            }
+
+            return Json(new { l = likes, d = dislikes });
+
+        }
+
+        [HttpPost]
+        public JsonResult Dislike(int problemId)
+        {
+            Problem problem = repository.GetByID(problemId);
+            var likes = problem.Likes.Count;
+            var dislikes = problem.Dislikes.Count;
+
+            bool haslike = likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
+            bool hasdislike = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
+
+            int dislikeId = 0;
+            int likeId = 0;
+
+            if (haslike) likeId = likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
+            if (hasdislike) dislikeId = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
+
+            if (hasdislike)
+            {
+                dislikeRepository.Delete(dislikeId);
+                dislikes--;
+            }
+            else
+            {
+                if (haslike)
+                {
+                    dislikeRepository.Insert(new Dislike() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    likeRepository.Delete(likeId);
+                    dislikes++;
+                    likes--;
+                }
+                else
+                {
+                    dislikeRepository.Insert(new Dislike() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    dislikes++;
+                }
+            }
+
+            return Json(new { l = likes, d = dislikes });
+
+        }
         private ProblemViewModel GetProblemViewModel(Problem problem)
         {
             var pvm = new ProblemViewModel();
@@ -184,6 +269,8 @@ namespace MyWebApp.Controllers
             // pvm.Solved=problem.UsersWhoSolved.Contains()
             sb.Remove(sb.Length - 1, 1);
             pvm.Answers = sb.ToString();
+            pvm.Likes = problem.Likes.Count;
+            pvm.Dislikes = problem.Dislikes.Count;
             return pvm;
         }
 

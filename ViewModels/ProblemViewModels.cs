@@ -35,6 +35,9 @@ namespace MyWebApp.ViewModels
         public int Id { get; set; }
         public bool Solved { get; set; }
 
+        public int Likes { get; set; }
+        public int Dislikes { get; set; }
+
         private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
 
         [Required]
