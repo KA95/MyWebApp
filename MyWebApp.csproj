@@ -257,6 +257,7 @@
     <Compile Include="Repositories\UserSolvedRepository.cs" />
     <Compile Include="Repositories\VideoRepository.cs" />
     <Compile Include="ValidationAttributes\CorrectSetOfAnswersAttribute.cs" />
+    <Compile Include="ViewModels\CommentViewModel.cs" />
     <Compile Include="ViewModels\ProblemViewModels.cs" />
     <Compile Include="Models\TagModels.cs" />
     <Compile Include="Models\UserAttemptedProblem.cs" />
