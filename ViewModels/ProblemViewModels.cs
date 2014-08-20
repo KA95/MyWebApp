@@ -38,6 +38,7 @@ namespace MyWebApp.ViewModels
         public int Likes { get; set; }
         public int Dislikes { get; set; }
 
+        public List<CommentViewModel> Comments { get; set; }
         private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
 
         [Required]

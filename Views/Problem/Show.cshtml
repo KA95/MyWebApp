@@ -5,53 +5,85 @@
 }
 
 <script src="~/Scripts/jquery-1.10.2.js"></script>
-<h2>Show</h2>
 <h1 id="title">@Model.Name</h1>
-@Html.Markdown(@Model.Text)
+<div class="row">
+    <div class="col-md-7">
+        @Html.Markdown(@Model.Text)
 
-@Html.Hidden("problemId", @Model.Id, new { @id = "problemId" })
-<br/>
-<a id="like" class="btn btn-success">Like <span class="badge" id="likeCount">@Model.Likes</span></a>
-<a id="dislike" class="btn btn-danger">Dislike <span class="badge" id="dislikeCount">@Model.Dislikes</span></a>
+        @Html.Hidden("problemId", @Model.Id, new { @id = "problemId" })
 
-<br />
-@if (Model.Solved != true)
-{
-    <div class="well">
-        @using (Html.BeginForm("Show", "Problem"))
+    </div>
+    <div class="col-md-5">
+        @if (Model.Solved != true)
         {
+            <div class="well">
+                @using (Html.BeginForm("Show", "Problem"))
+                {
 
-            <div class="form-horizontal">
-                <div class="form-group">
-                    @Html.LabelFor(model => model.Answers, "Your answer", htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.EditorFor(model => model.Answers, new { htmlAttributes = new { @class = "form-control" } })
-                        @Html.ValidationMessageFor(model => model.Answers, "", new { @class = "text-danger" })
-                    </div>
-                </div>
-                <div class="form-group">
-                    @Html.HiddenFor(model => model.Id)
-                </div>
-                <div class="form-group">
-                    <div class="col-md-offset-2 col-md-10">
-                        <input type="submit" value="Send solution" class="btn btn-default" />
-                    </div>
-                </div>
+                    <div class="form-horizontal">
+                        <div class="form-group">
+                            @Html.LabelFor(model => model.Answers, "Your answer", htmlAttributes: new { @class = "control-label col-md-2" })
+                            <div class="col-md-10">
+                                @Html.EditorFor(model => model.Answers, new { htmlAttributes = new { @class = "form-control" ,@id="answers" } })
+                                @Html.ValidationMessageFor(model => model.Answers, "", new { @class = "text-danger" })
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            @Html.HiddenFor(model => model.Id)
+                        </div>
+                        <div class="form-group">
+                            <div class="col-md-offset-2 col-md-10">
+                                <input type="submit" value="Send solution" class="btn btn-default" />
+                            </div>
+                        </div>
 
+                    </div>
+                }
             </div>
         }
+
+        else
+        {
+            <div class="jumbotron"> You solved it!</div>
+        }
+        <br />
+        
+        <a id="like" class="btn btn-success">Like <span class="badge" id="likeCount">@Model.Likes</span></a>
+        <a id="dislike" class="btn btn-danger">Dislike <span class="badge" id="dislikeCount">@Model.Dislikes</span></a>
+
+
     </div>
-}
+</div>
 
-else
-{
-    <div class="jumbotron"> You solved it!</div>
-}
+<div class="jumbotron">
+    <textarea id="commentTextBox" placeholder="Your comment" style="width:60%"></textarea>
+    <br/>
+    <a id="addComment" class="btn btn-success">Add comment</a>
+</div>
 
+<div id="comments" style="width:60%">
+    @foreach (var comment in Model.Comments)
+    {
+        <div class="row well">
+            <div class="col-md-2">
+                <div>
+                    @comment.AuthorName
+                </div>
+                <div>
+                    @comment.AddingTime
+                </div>
+            </div>
 
+            <blockquote class="col-md-4">
+                @comment.Text
+            </blockquote>
+        </div>
+    }
+</div>
 <script type="text/javascript">
 
     $(document).ready(function () {
+        $('#answers').val("");
         $('#like').click(function () {
             var id = $('#problemId').val();
             $.ajax({
@@ -78,6 +110,22 @@ else
                     function (data) {
                         $('#likeCount').html(data.l);
                         $('#dislikeCount').html(data.d);
+                    }
+            });
+        });
+
+        $('#addComment').click(function () {
+            var id = $('#problemId').val();
+            var text = $('#commentTextBox').val();
+            $.ajax({
+                dataType: 'json',
+                type: "POST",
+                url: "/Problem/AddComment/",
+                data: 'problemId=' + id + '&commentText=' + text,
+                success:
+                    function (data) {
+                        $('#comments').append(data.commentHTML);
+                        $('#commentTextBox').val("");
                     }
             });
         });

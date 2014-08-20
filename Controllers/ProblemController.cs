@@ -30,8 +30,9 @@ namespace MyWebApp.Controllers
         private readonly ITagRepository tagRepository;
         private readonly ILikeRepository likeRepository;
         private readonly IDislikeRepository dislikeRepository;
+        private readonly ICommentRepository commentRepository;
 
-        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, IVideoRepository videoRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository)
+        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, IVideoRepository videoRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository, ICommentRepository commentRepository)
         {
             this.repository = repository;
             this.categoryRepository = categoryRepository;
@@ -43,6 +44,7 @@ namespace MyWebApp.Controllers
             this.videoRepository = videoRepository;
             this.likeRepository = likeRepository;
             this.dislikeRepository = dislikeRepository;
+            this.commentRepository = commentRepository;
         }
 
         private ApplicationUserManager _userManager;
@@ -109,10 +111,8 @@ namespace MyWebApp.Controllers
 
             problem.Text = md.Transform(problem.Text);
 
-            pvm.Answers = "";
             return View(pvm);
         }
-
 
         public ActionResult Tutorial()
         {
@@ -170,6 +170,7 @@ namespace MyWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public JsonResult Like(int problemId)
         {
             Problem problem=repository.GetByID(problemId);
@@ -211,6 +212,7 @@ namespace MyWebApp.Controllers
         }
 
         [HttpPost]
+        [Authorize]
         public JsonResult Dislike(int problemId)
         {
             Problem problem = repository.GetByID(problemId);
@@ -250,6 +252,34 @@ namespace MyWebApp.Controllers
             return Json(new { l = likes, d = dislikes });
 
         }
+
+        [HttpPost]
+        [Authorize]
+        public JsonResult AddComment(int problemId,string commentText)
+        {
+            if (string.IsNullOrWhiteSpace(commentText))
+                return Json(new { commentHTML = ""});
+
+            commentRepository.Insert(new Comment() { dateTime = DateTime.Now, ProblemId = problemId, Text = commentText, UserId = UserManager.FindByName(User.Identity.Name).Id });
+            StringBuilder sb = new StringBuilder();
+            sb.Append("<div class=\"row well\">\n");
+            sb.Append(" <div class=\"col-md-2\">\n");
+            sb.Append("<div>\n");
+            sb.Append(User.Identity.Name);
+            sb.Append("</div>\n");
+            sb.Append("<div>\n");
+            sb.Append(DateTime.Now.ToString());
+            sb.Append("</div>\n");
+            sb.Append("</div>\n");
+            sb.Append("<blockquote class=\"col-md-4\">\n");
+            sb.Append(commentText);
+            sb.Append("</blockquote>\n");
+            sb.Append("</div>\n");
+            //sb.Append
+            return Json(new {commentHTML = sb.ToString()});
+        }
+        #region helpers 
+
         private ProblemViewModel GetProblemViewModel(Problem problem)
         {
             var pvm = new ProblemViewModel();
@@ -269,6 +299,12 @@ namespace MyWebApp.Controllers
             // pvm.Solved=problem.UsersWhoSolved.Contains()
             sb.Remove(sb.Length - 1, 1);
             pvm.Answers = sb.ToString();
+            pvm.Comments = new List<CommentViewModel>();
+            foreach(var comment in problem.Comments)
+            {
+                CommentViewModel com = new CommentViewModel() {AddingTime=comment.dateTime, AuthorName=comment.User.UserName, ProblemId= problem.Id, Text= comment.Text };
+                pvm.Comments.Add(com);
+            }
             pvm.Likes = problem.Likes.Count;
             pvm.Dislikes = problem.Dislikes.Count;
             return pvm;
@@ -342,5 +378,6 @@ namespace MyWebApp.Controllers
             }
             return true;
         }
+        #endregion
     }
 }

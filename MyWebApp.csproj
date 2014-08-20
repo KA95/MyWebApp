@@ -225,6 +225,14 @@
     <Compile Include="Migrations\201408091806094_mig5.Designer.cs">
       <DependentUpon>201408091806094_mig5.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201408201645424_mig6.cs" />
+    <Compile Include="Migrations\201408201645424_mig6.Designer.cs">
+      <DependentUpon>201408201645424_mig6.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\201408201654138_mig7.cs" />
+    <Compile Include="Migrations\201408201654138_mig7.Designer.cs">
+      <DependentUpon>201408201654138_mig7.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\CategoryModels.cs" />
@@ -237,10 +245,12 @@
     <Compile Include="Models\ProblemModels.cs" />
     <Compile Include="Repositories\AnswerRepository.cs" />
     <Compile Include="Repositories\CategoryRepository.cs" />
+    <Compile Include="Repositories\CommentRepository.cs" />
     <Compile Include="Repositories\DislikeRepository.cs" />
     <Compile Include="Repositories\ImageRepository.cs" />
     <Compile Include="Repositories\Interfaces\IAnswerRepository.cs" />
     <Compile Include="Repositories\Interfaces\ICategoryRepository.cs" />
+    <Compile Include="Repositories\Interfaces\ICommentRepository.cs" />
     <Compile Include="Repositories\Interfaces\IDislikeRepository.cs" />
     <Compile Include="Repositories\Interfaces\IImageRepository.cs" />
     <Compile Include="Repositories\Interfaces\ILikeRepository.cs" />
@@ -575,6 +585,12 @@
     </EmbeddedResource>
     <EmbeddedResource Include="Migrations\201408091806094_mig5.resx">
       <DependentUpon>201408091806094_mig5.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201408201645424_mig6.resx">
+      <DependentUpon>201408201645424_mig6.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201408201654138_mig7.resx">
+      <DependentUpon>201408201654138_mig7.cs</DependentUpon>
     </EmbeddedResource>
     <EmbeddedResource Include="Resources\Resource.en.resx" />
     <EmbeddedResource Include="Resources\Resource.ru.resx">

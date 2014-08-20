@@ -75,6 +75,7 @@ namespace MyWebApp.App_Start
             kernel.Bind<ITagRepository>().To<TagRepository>();
             kernel.Bind<ILikeRepository>().To<LikeRepository>();
             kernel.Bind<IDislikeRepository>().To<DislikeRepository>();
+            kernel.Bind<ICommentRepository>().To<CommentRepository>();
         }        
     }
 }
