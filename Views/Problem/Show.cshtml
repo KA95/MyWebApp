@@ -14,6 +14,15 @@
 
     </div>
     <div class="col-md-5">
+        <table title="Tags">
+            @foreach(var tag in @Model.Tags)
+            {
+                <tr><th>@tag</th></tr>
+            }
+        </table>
+        <div class="container">
+            Category: @Model.Category
+        </div>
         @if (Model.Solved != true)
         {
             <div class="well">
@@ -44,7 +53,7 @@
 
         else
         {
-            <div class="jumbotron"> You solved it!</div>
+            <div class="well"> You solved it!</div>
         }
         <br />
         

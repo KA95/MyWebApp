@@ -287,24 +287,38 @@ namespace MyWebApp.Controllers
             pvm.Name = problem.Name;
             pvm.Text = problem.Text;
             pvm.Id = problem.Id;
-            pvm.Images = (from image in problem.CorrectAnswers
-                          select image.Text);
             pvm.SelectedCategoryId = problem.CategoryId;
+            pvm.Category = problem.Category.Name;
+            pvm.Tags = new Collection<string>();
+            foreach (var tag in problem.Tags)
+            {
+                pvm.Tags.Add(tag.Name);
+            }
+
             StringBuilder sb = new StringBuilder();
             foreach (var ans in problem.CorrectAnswers)
             {
                 sb.Append(ans.Text);
                 sb.Append(';');
             }
-            // pvm.Solved=problem.UsersWhoSolved.Contains()
             sb.Remove(sb.Length - 1, 1);
             pvm.Answers = sb.ToString();
-            pvm.Comments = new List<CommentViewModel>();
-            foreach(var comment in problem.Comments)
+
+            pvm.Images = new Collection<string>();
+            foreach (var image in problem.ImagesInside)
             {
-                CommentViewModel com = new CommentViewModel() {AddingTime=comment.dateTime, AuthorName=comment.User.UserName, ProblemId= problem.Id, Text= comment.Text };
+                pvm.Tags.Add(image.URL);
+            }
+
+            pvm.Comments = new List<CommentViewModel>();
+            foreach (var comment in problem.Comments)
+            {
+                CommentViewModel com = new CommentViewModel() { AddingTime = comment.dateTime, AuthorName = comment.User.UserName, ProblemId = problem.Id, Text = comment.Text };
                 pvm.Comments.Add(com);
             }
+
+            // pvm.Solved=problem.UsersWhoSolved.Contains()
+           
             pvm.Likes = problem.Likes.Count;
             pvm.Dislikes = problem.Dislikes.Count;
             return pvm;
@@ -319,6 +333,11 @@ namespace MyWebApp.Controllers
             problem.Name = problemView.Name;
             problem.Text = problemView.Text;
             problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
+            problem.Tags = new Collection<Tag>();
+            foreach(var tag in problemView.Tags)
+            {
+                problem.Tags.Add(tagRepository.GetByName(tag));
+            }
             repository.Insert(problem);
             problem.ImagesInside = new Collection<Image>();
             if (problemView.Images != null)
@@ -346,6 +365,12 @@ namespace MyWebApp.Controllers
                 problem.ImagesInside.Add(new Image() { URL = image, ProblemId = problem.Id, UserId = problem.AuthorId });
             }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
+            problem.Tags = new Collection<Tag>();
+            repository.Update(problem);
+            foreach (var tag in problemView.Tags)
+            {
+                problem.Tags.Add(tagRepository.GetByName(tag));
+            }
             repository.Update(problem);
         }
 

@@ -28,15 +28,17 @@ namespace MyWebApp.ViewModels
         [CorrectSetOfAnswers]
         public string Answers { get; set; }
 
-        public IEnumerable<string> Tags { get; set; }
-        public IEnumerable<string> Images { get; set; }
-        public IEnumerable<string> Videos { get; set; }
+        public ICollection<string> Tags { get; set; }
+        public ICollection<string> Images { get; set; }
+        public ICollection<string> Videos { get; set; }
 
         public int Id { get; set; }
         public bool Solved { get; set; }
 
         public int Likes { get; set; }
         public int Dislikes { get; set; }
+
+        public string Category{ get; set; }
 
         public List<CommentViewModel> Comments { get; set; }
         private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
