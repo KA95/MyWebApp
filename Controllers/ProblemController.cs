@@ -1,4 +1,6 @@
-﻿using MyWebApp.Models;
+﻿using System.IO;
+using System.Web.Helpers;
+using MyWebApp.Models;
 using MyWebApp.ViewModels;
 using MyWebApp.Repositories;
 using System;
@@ -255,30 +257,24 @@ namespace MyWebApp.Controllers
 
         [HttpPost]
         [Authorize]
-        public JsonResult AddComment(int problemId,string commentText)
+        public ActionResult AddComment(int problemId,string commentText)
         {
             if (string.IsNullOrWhiteSpace(commentText))
-                return Json(new { commentHTML = ""});
+                return Json( new {commentHtml = ""});
 
             commentRepository.Insert(new Comment() { dateTime = DateTime.Now, ProblemId = problemId, Text = commentText, UserId = UserManager.FindByName(User.Identity.Name).Id });
-            StringBuilder sb = new StringBuilder();
-            sb.Append("<div class=\"row well\">\n");
-            sb.Append(" <div class=\"col-md-2\">\n");
-            sb.Append("<div>\n");
-            sb.Append(User.Identity.Name);
-            sb.Append("</div>\n");
-            sb.Append("<div>\n");
-            sb.Append(DateTime.Now.ToString());
-            sb.Append("</div>\n");
-            sb.Append("</div>\n");
-            sb.Append("<blockquote class=\"col-md-4\">\n");
-            sb.Append(commentText);
-            sb.Append("</blockquote>\n");
-            sb.Append("</div>\n");
-            //sb.Append
-            return Json(new {commentHTML = sb.ToString()});
+
+            var cvm = new CommentViewModel()
+            {
+                AddingTime = DateTime.Now,
+                AuthorName = User.Identity.Name,
+                ProblemId = problemId,
+                Text = commentText
+            };
+
+            return Json(new{html = RenderPartialViewToString("_CommentView",cvm)});
         }
-        #region helpers 
+        #region helpers
 
         private ProblemViewModel GetProblemViewModel(Problem problem)
         {
@@ -410,6 +406,37 @@ namespace MyWebApp.Controllers
             }
             return true;
         }
+
+        //[HttpPost]
+        //public ActionResult InfiniteScroll(int? taskId, int blockNumber)
+        //{
+        //    System.Threading.Thread.Sleep(1000);
+        //    const int blockSize = 5;
+        //    var comments = GetTasksComments(taskId, blockNumber);
+        //    var jsonModel = new JsonModel
+        //    {
+        //        NoMoreData = comments.Count < blockSize,
+        //        HtmlString = RenderPartialViewToString("_CommentViewPartial", comments),
+        //    };
+        //    return Json(jsonModel);
+        //}
+
+        private string RenderPartialViewToString(string viewName, CommentViewModel comment)
+        {
+            if (string.IsNullOrEmpty(viewName))
+            {
+                viewName = ControllerContext.RouteData.GetRequiredString("action");
+            }
+            ViewData.Model = comment;
+            using (var sw = new StringWriter())
+            {
+                var viewResult = ViewEngines.Engines.FindPartialView(ControllerContext, viewName);
+                var viewContext = new ViewContext(ControllerContext, viewResult.View, ViewData, TempData, sw);
+                viewResult.View.Render(viewContext, sw);
+                return sw.GetStringBuilder().ToString();
+            }
+        }
+
         #endregion
     }
 }

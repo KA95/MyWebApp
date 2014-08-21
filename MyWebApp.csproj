@@ -560,6 +560,7 @@
     <Content Include="Views\Problem\_CreateEdit.cshtml" />
     <Content Include="Views\BackloadDemo\Index.cshtml" />
     <Content Include="Views\Problem\Tutorial.cshtml" />
+    <Content Include="Views\Problem\_CommentView.cshtml" />
     <None Include="Web.Backload.Default.config" />
     <None Include="Web.Backload.xsd">
       <SubType>Designer</SubType>

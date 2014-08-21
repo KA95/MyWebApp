@@ -1,0 +1,15 @@
+﻿@model MyWebApp.ViewModels.CommentViewModel
+<div class="row well">
+    <div class="col-md-2">
+        <div>
+            @Model.AuthorName
+        </div>
+        <div>
+            @Model.AddingTime
+        </div>
+    </div>
+
+    <blockquote class="col-md-4">
+        @Model.Text
+    </blockquote>
+</div>
