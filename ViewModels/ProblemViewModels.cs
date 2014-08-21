@@ -1,14 +1,7 @@
-﻿using MyWebApp.Controllers;
-using MyWebApp.Repositories;
-using System;
+﻿using MyWebApp.Repositories;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
-using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
-using Microsoft.AspNet.Identity.Owin;
-using Microsoft.Owin;
-using System.Web;
 using MyWebApp.Models;
 using System.Web.Mvc;
 using MyWebApp.ValidationAttributes;
@@ -27,6 +20,8 @@ namespace MyWebApp.ViewModels
         [Required]
         [CorrectSetOfAnswers]
         public string Answers { get; set; }
+
+        public string TagsString { get; set; }
 
         public ICollection<string> Tags { get; set; }
         public ICollection<string> Images { get; set; }

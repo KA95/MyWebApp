@@ -125,7 +125,7 @@ namespace MyWebApp.Controllers
 
             ViewBag.Button = "Create";
             Problem problem = new Problem();
-            return View(new ProblemViewModel() { Images = new Collection<string>() });
+            return View(new ProblemViewModel() { Images = new Collection<string>() ,TagsString = ""});
         }
 
         [HttpPost]
@@ -177,14 +177,14 @@ namespace MyWebApp.Controllers
             var likes = problem.Likes.Count;
             var dislikes = problem.Dislikes.Count;
 
-            bool haslike=likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
-            bool hasdislike=dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
+            bool haslike=likeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
+            bool hasdislike=dislikeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
 
             int dislikeId=0;
             int likeId=0;
 
-            if (haslike) likeId=likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
-            if (hasdislike) dislikeId=dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
+            if (haslike) likeId=likeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
+            if (hasdislike) dislikeId=dislikeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
 
             if(haslike)
             {
@@ -219,14 +219,14 @@ namespace MyWebApp.Controllers
             var likes = problem.Likes.Count;
             var dislikes = problem.Dislikes.Count;
 
-            bool haslike = likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
-            bool hasdislike = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).Count() != 0;
+            bool haslike = likeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
+            bool hasdislike = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
 
             int dislikeId = 0;
             int likeId = 0;
 
-            if (haslike) likeId = likeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
-            if (hasdislike) dislikeId = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Where(m => m.User.UserName == User.Identity.Name).First().Id;
+            if (haslike) likeId = likeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
+            if (hasdislike) dislikeId = dislikeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
 
             if (hasdislike)
             {
@@ -289,13 +289,18 @@ namespace MyWebApp.Controllers
             pvm.Id = problem.Id;
             pvm.SelectedCategoryId = problem.CategoryId;
             pvm.Category = problem.Category.Name;
-            pvm.Tags = new Collection<string>();
+
+            StringBuilder sb= new StringBuilder();
             foreach (var tag in problem.Tags)
             {
-                pvm.Tags.Add(tag.Name);
+                sb.Append(tag.Name);
+                sb.Append(',');
             }
+            
+            pvm.TagsString = sb.ToString();
 
-            StringBuilder sb = new StringBuilder();
+            sb.Clear();
+
             foreach (var ans in problem.CorrectAnswers)
             {
                 sb.Append(ans.Text);
@@ -334,10 +339,12 @@ namespace MyWebApp.Controllers
             problem.Text = problemView.Text;
             problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
             problem.Tags = new Collection<Tag>();
-            foreach(var tag in problemView.Tags)
+            
+            foreach(var tag in problemView.TagsString.Split(','))
             {
                 problem.Tags.Add(tagRepository.GetByName(tag));
             }
+
             repository.Insert(problem);
             problem.ImagesInside = new Collection<Image>();
             if (problemView.Images != null)
@@ -367,7 +374,7 @@ namespace MyWebApp.Controllers
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             problem.Tags = new Collection<Tag>();
             repository.Update(problem);
-            foreach (var tag in problemView.Tags)
+            foreach (var tag in problemView.TagsString.Split(','))
             {
                 problem.Tags.Add(tagRepository.GetByName(tag));
             }

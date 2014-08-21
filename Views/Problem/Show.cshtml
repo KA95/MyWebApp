@@ -3,8 +3,9 @@
     ViewBag.Title = "Show";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
 <script src="~/Scripts/jquery-2.1.1.js"></script>
+<link href="~/Content/bootstrap-tagsinput.css" rel="stylesheet" />
+<script src="~/Scripts/bootstrap-tagsinput.js"></script>
 <h1 id="title">@Model.Name</h1>
 <div class="row">
     <div class="col-md-7">
@@ -14,12 +15,7 @@
 
     </div>
     <div class="col-md-5">
-        <table title="Tags">
-            @foreach(var tag in @Model.Tags)
-            {
-                <tr><th>@tag</th></tr>
-            }
-        </table>
+        @Html.TextBoxFor(model => model.TagsString, new Dictionary<string, object> { { "data-role", "tagsinput" }, { "type", "text" },{"readonly",""} })
         <div class="container">
             Category: @Model.Category
         </div>
