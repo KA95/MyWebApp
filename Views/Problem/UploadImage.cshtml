@@ -1,0 +1,28 @@
+﻿
+
+<link href="~/Content/Upload.css" rel="stylesheet" />
+@Scripts.Render("~/bundles/jqueryval")
+
+<div>
+    <div class="form-group">
+        <label class="control-label col-md-2" for="myfile" form="imageform">Image: </label>
+        <div class="col-md-10">
+            <input type="file" id="myfile" name="myfile" form="imageform" accept="image/*" class="form-control btn btn-default" title="Choose image"><br>
+        </div>
+    </div>
+    <input type="submit" value="Upload File to Server" form="imageform" class="btn btn-success">
+</div>
+<div class="progress">
+    <div class="bar"></div>
+    <div class="percent">0%</div>
+</div>
+<div class="row">
+    <div class="col-md-2">URL for markdown:</div>
+    <div class="col-md-2" id="status"></div>
+</div>
+
+@Scripts.Render("~/bundles/jqueryval")
+<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script src="~/Scripts/CreateEditScript.js"></script>
+

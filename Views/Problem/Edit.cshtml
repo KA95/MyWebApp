@@ -8,6 +8,8 @@
 <script src="~/Scripts/jquery-2.1.1.intellisense.js"></script>
 
 <h2>Edit</h2>
+
+<form action="/Problem/UploadFile" method="post" enctype="multipart/form-data" id="imageform"></form>
 @using (Html.BeginForm())
 {
     @Html.AntiForgeryToken()

@@ -14,7 +14,6 @@
                 }
         });
     });
-
     $('#dislike').click(function () {
         var id = $('#problemId').val();
         $.ajax({
@@ -29,7 +28,6 @@
                 }
         });
     });
-
     $('#addComment').click(function () {
         var id = $('#problemId').val();
         var text = $('#commentTextBox').val();
@@ -49,10 +47,8 @@
                 })
         });
     });
-    $(".bootstrap-tagsinput > input").attr("hidden", "");
 
+    $(".bootstrap-tagsinput > input").attr("hidden", "");
     $(".bootstrap-tagsinput > .tag > span").remove();
 
 });
-
-

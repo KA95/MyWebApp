@@ -1,4 +1,6 @@
 ﻿using System.IO;
+using CloudinaryDotNet;
+using CloudinaryDotNet.Actions;
 using MyWebApp.Models;
 using MyWebApp.ViewModels;
 using System;
@@ -63,6 +65,10 @@ namespace MyWebApp.Controllers
             return View(repository.Get());
         }
 
+        public ActionResult UploadImage()
+        {
+            return View();
+        }
         [HttpGet]
         public ActionResult Show(int id)
         {
@@ -119,7 +125,7 @@ namespace MyWebApp.Controllers
         public ActionResult Create()
         {
             ViewBag.Button = "Create";
-            return View(new ProblemViewModel { Images = new Collection<string>() ,TagsString = ""});
+            return View(new ProblemViewModel { Images = new Collection<string>(), TagsString = "" });
         }
 
         [HttpPost]
@@ -167,28 +173,28 @@ namespace MyWebApp.Controllers
         [Authorize]
         public JsonResult Like(int problemId)
         {
-            Problem problem=repository.GetByID(problemId);
+            Problem problem = repository.GetByID(problemId);
             var likes = problem.Likes.Count;
             var dislikes = problem.Dislikes.Count;
 
-            bool haslike=likeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
-            bool hasdislike=dislikeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
+            bool haslike = likeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
+            bool hasdislike = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
 
-            int dislikeId=0;
-            int likeId=0;
+            int dislikeId = 0;
+            int likeId = 0;
 
-            if (haslike) likeId=likeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
-            if (hasdislike) dislikeId=dislikeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
+            if (haslike) likeId = likeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
+            if (hasdislike) dislikeId = dislikeRepository.Get().Where(m => m.ProblemId == problemId).First(m => m.User.UserName == User.Identity.Name).Id;
 
-            if(haslike)
+            if (haslike)
             {
                 likeRepository.Delete(likeId);
                 likes--;
             }
             else
             {
-                if(hasdislike)
-                {          
+                if (hasdislike)
+                {
                     likeRepository.Insert(new Like { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
                     dislikeRepository.Delete(dislikeId);
                     dislikes--;
@@ -249,10 +255,10 @@ namespace MyWebApp.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult AddComment(int problemId,string commentText)
+        public ActionResult AddComment(int problemId, string commentText)
         {
             if (string.IsNullOrWhiteSpace(commentText))
-                return Json( new {commentHtml = ""});
+                return Json(new { commentHtml = "" });
 
             commentRepository.Insert(new Comment { dateTime = DateTime.Now, ProblemId = problemId, Text = commentText, UserId = UserManager.FindByName(User.Identity.Name).Id });
 
@@ -264,7 +270,33 @@ namespace MyWebApp.Controllers
                 Text = commentText
             };
 
-            return Json(new{html = RenderPartialViewToString("_CommentView",cvm)});
+            return Json(new { html = RenderPartialViewToString("_CommentView", cvm) });
+        }
+
+
+        [HttpPost]
+        public ActionResult UploadFile(HttpPostedFileBase myFile)
+        {
+            if (myFile == null)
+            {
+                return Json("");
+            }
+            var cloudinary = new Cloudinary(
+            new Account(
+            "dbyvro3qo",
+            "649126626476462",
+            "CZ_W5wnwG_yxvpHfvJpaepZf9n8"));
+
+            var uploadParams = new ImageUploadParams()
+            {
+                File = new FileDescription(myFile.FileName, myFile.InputStream),
+            };
+
+            var uploadResult = cloudinary.Upload(uploadParams);
+
+            var uplPath = uploadResult.Uri;
+
+            return Json(uplPath);
         }
         #region helpers
 
@@ -278,13 +310,13 @@ namespace MyWebApp.Controllers
             pvm.SelectedCategoryId = problem.CategoryId;
             pvm.Category = problem.Category.Name;
 
-            var sb= new StringBuilder();
+            var sb = new StringBuilder();
             foreach (var tag in problem.Tags)
             {
                 sb.Append(tag.Name);
                 sb.Append(',');
             }
-            
+
             pvm.TagsString = sb.ToString();
 
             sb.Clear();
@@ -311,7 +343,7 @@ namespace MyWebApp.Controllers
             }
 
             // pvm.Solved=problem.UsersWhoSolved.Contains()
-           
+
             pvm.Likes = problem.Likes.Count;
             pvm.Dislikes = problem.Dislikes.Count;
             return pvm;
@@ -330,7 +362,7 @@ namespace MyWebApp.Controllers
                 Tags = new Collection<Tag>()
             };
 
-            foreach(var tag in problemView.TagsString.Split(','))
+            foreach (var tag in problemView.TagsString.Split(','))
             {
                 problem.Tags.Add(tagRepository.GetByName(tag));
             }
@@ -340,7 +372,7 @@ namespace MyWebApp.Controllers
             if (problemView.Images != null)
                 foreach (var image in problemView.Images)
                 {
-                    problem.ImagesInside.Add(new Image() { Url = image, ProblemId = problem.Id});
+                    problem.ImagesInside.Add(new Image() { Url = image, ProblemId = problem.Id });
                 }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             repository.Update(problem);

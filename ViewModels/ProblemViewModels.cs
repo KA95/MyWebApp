@@ -1,4 +1,5 @@
-﻿using MyWebApp.Repositories;
+﻿using System.Web;
+using MyWebApp.Repositories;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -37,6 +38,8 @@ namespace MyWebApp.ViewModels
 
         public List<CommentViewModel> Comments { get; set; }
         private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
+
+        public HttpPostedFileBase MyFile { get; set; }
 
         [Required]
         [Display(Name = "Category")]
