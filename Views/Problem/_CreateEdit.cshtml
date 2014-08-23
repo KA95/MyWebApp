@@ -2,7 +2,11 @@
 <link href="~/Content/bootstrap-tagsinput.css" rel="stylesheet" />
 <script src="~/Scripts/jquery-2.1.1.js"></script>
 <script src="~/Scripts/bootstrap-tagsinput.js"></script>
-
+<script src="~/Scripts/jquery-2.1.1.min.js"></script>
+<script src="~/Scripts/jquery-ui-1.9.2.min_.js"></script>
+<script src="~/Scripts/jquery.fileupload.js"></script>
+<script src="~/Scripts/jquery.fileupload-ui.js"></script>
+<script src="~/Scripts/jquery.iframe-transport.js"></script>
 <ul class="nav nav-tabs" style="margin-bottom: 15px;">
     <li class="active"><a href="#Main" data-toggle="tab">Requied info</a></li>
     <li class=""><a href="#media" data-toggle="tab">Photos&Videos</a></li>
@@ -48,7 +52,14 @@
     </div>
     <div class="tab-pane fade" id="media">
         <hr />
-        <p> To insert video in your problem look <a href="/Problem/Tutorial">tutorial.</a></p>
+        <div> To insert video in your problem look <a href="/Problem/Tutorial">tutorial.</a></div>
+        <div>
+            <form action="/Image/Upload/">
+                
+                <input type="submit" value="Upload">
+                
+            </form>
+        </div>
     </div>
 
     <div class="tab-pane fade" id="tags">

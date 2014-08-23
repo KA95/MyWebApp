@@ -4,8 +4,6 @@
 namespace MyWebApp.App_Start
 {
     using System;
-    using System.Web;
-
     using Microsoft.Web.Infrastructure.DynamicModuleHelper;
 
     using Ninject;
@@ -70,7 +68,7 @@ namespace MyWebApp.App_Start
             kernel.Bind<IAnswerRepository>().To<AnswerRepository>();
             kernel.Bind<IUserSolvedRepository>().To<UserSolvedRepository>();
             kernel.Bind<IUserAttemptedRepository>().To<UserAttemptedRepository>();
-            kernel.Bind<IVideoRepository>().To<VideoRepository>();
+          
             kernel.Bind<IImageRepository>().To<ImageRepository>();
             kernel.Bind<ITagRepository>().To<TagRepository>();
             kernel.Bind<ILikeRepository>().To<LikeRepository>();

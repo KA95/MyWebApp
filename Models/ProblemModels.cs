@@ -1,9 +1,6 @@
 namespace MyWebApp.Models
 {
-    using System;
     using System.Collections.Generic;
-    using System.Data.Entity;
-    using System.Linq;
 
     public class Problem
     {
@@ -20,7 +17,6 @@ namespace MyWebApp.Models
         public virtual ICollection<UserSolvedProblem> UsersWhoSolved { get; set; }
         public virtual ICollection<UserAttemptedProblem> UsersWhoAttempted { get; set; }
         public virtual ICollection<Image> ImagesInside { get; set; }
-        public virtual ICollection<Video> VideosInside { get; set; }
         public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Dislike> Dislikes { get; set; }
         public virtual ICollection<Tag> Tags { get; set; }

@@ -1,15 +1,12 @@
 ﻿using System.IO;
-using System.Web.Helpers;
 using MyWebApp.Models;
 using MyWebApp.ViewModels;
-using MyWebApp.Repositories;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
-using Microsoft.AspNet.Identity.EntityFramework;
 using Microsoft.AspNet.Identity.Owin;
 using MyWebApp.Repositories.Interfaces;
 using System.Collections.ObjectModel;
@@ -28,13 +25,12 @@ namespace MyWebApp.Controllers
         private readonly IUserSolvedRepository userSolvedRepository;
         private readonly IUserAttemptedRepository userAttemptedRepository;
         private readonly IImageRepository imageRepository;
-        private readonly IVideoRepository videoRepository;
         private readonly ITagRepository tagRepository;
         private readonly ILikeRepository likeRepository;
         private readonly IDislikeRepository dislikeRepository;
         private readonly ICommentRepository commentRepository;
 
-        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, IVideoRepository videoRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository, ICommentRepository commentRepository)
+        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository, ICommentRepository commentRepository)
         {
             this.repository = repository;
             this.categoryRepository = categoryRepository;
@@ -43,7 +39,6 @@ namespace MyWebApp.Controllers
             this.userSolvedRepository = userSolvedRepository;
             this.tagRepository = tagRepository;
             this.imageRepository = imageRepository;
-            this.videoRepository = videoRepository;
             this.likeRepository = likeRepository;
             this.dislikeRepository = dislikeRepository;
             this.commentRepository = commentRepository;
@@ -73,7 +68,7 @@ namespace MyWebApp.Controllers
         {
             Problem problem = repository.GetByID(id);
 
-            Markdown md = new Markdown();
+            var md = new Markdown();
             problem.Text = md.Transform(problem.Text);
 
             IEnumerable<UserSolvedProblem> usersSolved = userSolvedRepository.Get(m => m.ProblemId == problem.Id);
@@ -93,23 +88,22 @@ namespace MyWebApp.Controllers
         [Authorize]
         public ActionResult Show(ProblemViewModel problemView)
         {
-            int a = 0;
             Problem problem = repository.GetByID(problemView.Id);
             var pvm = GetProblemViewModel(problem);
             pvm.Solved = false;
             if (ModelState.IsValidField("Answers"))
                 if (AreEqual(GetAnswersFromString(problemView.Answers, problem), problem.CorrectAnswers))
                 {
-                    userSolvedRepository.Insert(new UserSolvedProblem() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
+                    userSolvedRepository.Insert(new UserSolvedProblem { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
                     pvm.Solved = true;
                 }
                 else
                 {
-                    userAttemptedRepository.Insert(new UserAttemptedProblem() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
+                    userAttemptedRepository.Insert(new UserAttemptedProblem { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
                 }
 
 
-            Markdown md = new Markdown();
+            var md = new Markdown();
 
             problem.Text = md.Transform(problem.Text);
 
@@ -124,10 +118,8 @@ namespace MyWebApp.Controllers
         [Authorize]
         public ActionResult Create()
         {
-
             ViewBag.Button = "Create";
-            Problem problem = new Problem();
-            return View(new ProblemViewModel() { Images = new Collection<string>() ,TagsString = ""});
+            return View(new ProblemViewModel { Images = new Collection<string>() ,TagsString = ""});
         }
 
         [HttpPost]
@@ -197,14 +189,14 @@ namespace MyWebApp.Controllers
             {
                 if(hasdislike)
                 {          
-                    likeRepository.Insert(new Like() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    likeRepository.Insert(new Like { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
                     dislikeRepository.Delete(dislikeId);
                     dislikes--;
                     likes++;
                 }
                 else
                 {
-                    likeRepository.Insert(new Like() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    likeRepository.Insert(new Like { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
                     likes++;
                 }
             }
@@ -239,14 +231,14 @@ namespace MyWebApp.Controllers
             {
                 if (haslike)
                 {
-                    dislikeRepository.Insert(new Dislike() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    dislikeRepository.Insert(new Dislike { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
                     likeRepository.Delete(likeId);
                     dislikes++;
                     likes--;
                 }
                 else
                 {
-                    dislikeRepository.Insert(new Dislike() { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
+                    dislikeRepository.Insert(new Dislike { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problemId });
                     dislikes++;
                 }
             }
@@ -262,7 +254,7 @@ namespace MyWebApp.Controllers
             if (string.IsNullOrWhiteSpace(commentText))
                 return Json( new {commentHtml = ""});
 
-            commentRepository.Insert(new Comment() { dateTime = DateTime.Now, ProblemId = problemId, Text = commentText, UserId = UserManager.FindByName(User.Identity.Name).Id });
+            commentRepository.Insert(new Comment { dateTime = DateTime.Now, ProblemId = problemId, Text = commentText, UserId = UserManager.FindByName(User.Identity.Name).Id });
 
             var cvm = new CommentViewModel()
             {
@@ -286,7 +278,7 @@ namespace MyWebApp.Controllers
             pvm.SelectedCategoryId = problem.CategoryId;
             pvm.Category = problem.Category.Name;
 
-            StringBuilder sb= new StringBuilder();
+            var sb= new StringBuilder();
             foreach (var tag in problem.Tags)
             {
                 sb.Append(tag.Name);
@@ -308,7 +300,7 @@ namespace MyWebApp.Controllers
             pvm.Images = new Collection<string>();
             foreach (var image in problem.ImagesInside)
             {
-                pvm.Tags.Add(image.URL);
+                pvm.Tags.Add(image.Url);
             }
 
             pvm.Comments = new List<CommentViewModel>();
@@ -329,13 +321,15 @@ namespace MyWebApp.Controllers
         {
 
 
-            Problem problem = new Problem();
-            problem.CategoryId = problemView.SelectedCategoryId;
-            problem.Name = problemView.Name;
-            problem.Text = problemView.Text;
-            problem.AuthorId = UserManager.FindByName(User.Identity.Name).Id;
-            problem.Tags = new Collection<Tag>();
-            
+            var problem = new Problem
+            {
+                CategoryId = problemView.SelectedCategoryId,
+                Name = problemView.Name,
+                Text = problemView.Text,
+                AuthorId = UserManager.FindByName(User.Identity.Name).Id,
+                Tags = new Collection<Tag>()
+            };
+
             foreach(var tag in problemView.TagsString.Split(','))
             {
                 problem.Tags.Add(tagRepository.GetByName(tag));
@@ -346,7 +340,7 @@ namespace MyWebApp.Controllers
             if (problemView.Images != null)
                 foreach (var image in problemView.Images)
                 {
-                    problem.ImagesInside.Add(new Image() { URL = image, ProblemId = problem.Id, UserId = problem.AuthorId });
+                    problem.ImagesInside.Add(new Image() { Url = image, ProblemId = problem.Id});
                 }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             repository.Update(problem);
@@ -365,7 +359,7 @@ namespace MyWebApp.Controllers
             problem.ImagesInside = new Collection<Image>();
             foreach (var image in problemView.Images)
             {
-                problem.ImagesInside.Add(new Image() { URL = image, ProblemId = problem.Id, UserId = problem.AuthorId });
+                problem.ImagesInside.Add(new Image() { Url = image, ProblemId = problem.Id });
             }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             problem.Tags = new Collection<Tag>();
@@ -384,8 +378,8 @@ namespace MyWebApp.Controllers
             var collection = new Collection<Answer>();
             foreach (var ans in answersArray)
             {
-                ans.Trim();
-                collection.Add(new Answer() { Text = ans, Problem = problem });
+
+                collection.Add(new Answer() { Text = ans.Trim(), Problem = problem });
             }
             return collection;
         }
@@ -398,13 +392,7 @@ namespace MyWebApp.Controllers
                                      select ans.Text;
             IEnumerable<string> c2 = from ans in collection2
                                      select ans.Text;
-
-
-            foreach (var ans in c1)
-            {
-                if (!c2.Contains(ans)) return false;
-            }
-            return true;
+            return c1.All(c2.Contains);
         }
 
         //[HttpPost]

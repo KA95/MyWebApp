@@ -17,9 +17,7 @@ namespace MyWebApp.Models
         public virtual ICollection<Like> Likes { get; set; }
         public virtual ICollection<Dislike> Dislikes { get; set; }
         public virtual ICollection<Comment> Comments { get; set; }
-        public virtual ICollection<Image> Images { get; set; }
-        public virtual ICollection<Video> Videos { get; set; }
-
+        
         public async Task<ClaimsIdentity> GenerateUserIdentityAsync(UserManager<ApplicationUser> manager)
         {
             // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
@@ -37,7 +35,6 @@ namespace MyWebApp.Models
         public DbSet<Image> Images { get; set; }
         public DbSet<Like> Likes { get; set; }
         public DbSet<Problem> Problems { get; set; }
-        public DbSet<Video> Videos { get; set; }
         public DbSet<Tag> Tags { get; set; }
         public DbSet<UserAttemptedProblem> UserAttemptedProblems { get; set; }
         public DbSet<UserSolvedProblem> UserSolvedProblems { get; set; }

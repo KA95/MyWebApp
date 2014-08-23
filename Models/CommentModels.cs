@@ -1,8 +1,6 @@
 namespace MyWebApp.Models
 {
     using System;
-    using System.Data.Entity;
-    using System.Linq;
 
     public class Comment
     {

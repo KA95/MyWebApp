@@ -1,11 +1,4 @@
-﻿using MyWebApp.Repositories;
-using System;
-using System.Collections.Generic;
-using System.Data.Entity;
-using System.Linq;
-using System.Web;
-
-namespace MyWebApp.Models
+﻿namespace MyWebApp.Models
 {
     public class Answer
     {
