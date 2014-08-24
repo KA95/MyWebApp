@@ -15,7 +15,8 @@ select,
 textarea {
     max-width: 70%;
 }
-iframe {
+iframe,
+img {
     max-width: 100%
 }
 .btn-file {

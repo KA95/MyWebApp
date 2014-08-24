@@ -1,8 +1,13 @@
 ﻿@model MyWebApp.ViewModels.ProblemViewModel
 <script src="~/Scripts/jquery-2.1.1.js"></script>
 <script src="~/Scripts/jquery-ui-1.9.2.min.js"></script>
+
 <link href="~/Content/bootstrap-tagsinput.css" rel="stylesheet" />
 <script src="~/Scripts/bootstrap-tagsinput.js"></script>
+
+<script src="http://malsup.github.com/jquery.form.js"></script>
+<script src="~/Scripts/CreateEditScript.js"></script>
+
 <ul class="nav nav-tabs" style="margin-bottom: 15px;">
     <li class="active"><a href="#Main" data-toggle="tab">Requied info</a></li>
     <li class=""><a href="#media" data-toggle="tab">Photos&Videos</a></li>
@@ -59,15 +64,21 @@
         <hr />
         @*<input type="text" data-role="tagsinput" name="TagsString" />*@
 
-                <div class="form-group">
-                    @Html.LabelFor(model => model.TagsString, htmlAttributes: new { @class = "control-label col-md-2" })
-                    <div class="col-md-10">
-                        @Html.TextBoxFor(model => model.TagsString, new Dictionary<string, object> { { "data-role", "tagsinput" }, { "class", "form-control" }, { "type", "text" } })
-                    </div>
-                </div>
-            </div>
-
-            <div class="tab-pane fade" id="other">
-                <hr />
+        <div class="form-group">
+            @Html.LabelFor(model => model.TagsString, htmlAttributes: new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextBoxFor(model => model.TagsString, new Dictionary<string, object> { { "data-role", "tagsinput" }, { "class", "form-control" }, { "type", "text" } })
             </div>
         </div>
+    </div>
+
+    <div class="tab-pane fade" id="other">
+        <hr />
+    </div>
+</div>
+
+
+<script src="~/Scripts/markdown.js"></script>
+<script src="~/Scripts/to-markdown.js"></script>
+<script src="~/Scripts/bootstrap-markdown.js"></script>
+<link href="~/Content/bootstrap-markdown.min.css" rel="stylesheet" />

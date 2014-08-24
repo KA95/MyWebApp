@@ -1,7 +1,6 @@
 ﻿
 
 <link href="~/Content/Upload.css" rel="stylesheet" />
-@Scripts.Render("~/bundles/jqueryval")
 
 <div>
     <div class="form-group">
@@ -12,17 +11,16 @@
     </div>
     <input type="submit" value="Upload File to Server" form="imageform" class="btn btn-success">
 </div>
+<br/>
 <div class="progress">
-    <div class="bar"></div>
-    <div class="percent">0%</div>
+    <div class="progress-bar"></div>
 </div>
+
 <div class="row">
     <div class="col-md-2">URL for markdown:</div>
     <div class="col-md-2" id="status"></div>
 </div>
 
-@Scripts.Render("~/bundles/jqueryval")
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.js"></script>
 <script src="http://malsup.github.com/jquery.form.js"></script>
 <script src="~/Scripts/CreateEditScript.js"></script>
 

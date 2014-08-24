@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
+using Microsoft.Ajax.Utilities;
 using MyWebApp.Models;
 using MyWebApp.ViewModels;
 using System;
@@ -65,10 +66,6 @@ namespace MyWebApp.Controllers
             return View(repository.Get());
         }
 
-        public ActionResult UploadImage()
-        {
-            return View();
-        }
         [HttpGet]
         public ActionResult Show(int id)
         {
@@ -94,6 +91,13 @@ namespace MyWebApp.Controllers
         [Authorize]
         public ActionResult Show(ProblemViewModel problemView)
         {
+            if (problemView.Author == User.Identity.Name)
+            {
+                problemView.Answers = "";
+                return View(problemView);
+
+            }
+
             Problem problem = repository.GetByID(problemView.Id);
             var pvm = GetProblemViewModel(problem);
             pvm.Solved = false;
@@ -158,8 +162,6 @@ namespace MyWebApp.Controllers
         [Authorize]
         public ActionResult Edit(ProblemViewModel problemView)
         {
-            if (problemView.Images == null)
-                problemView.Images = new Collection<string>();
             if (ModelState.IsValidField("Answers"))
                 UpdateProblemFromView(problemView);
             else
@@ -174,8 +176,13 @@ namespace MyWebApp.Controllers
         public JsonResult Like(int problemId)
         {
             Problem problem = repository.GetByID(problemId);
+
+            
             var likes = problem.Likes.Count;
             var dislikes = problem.Dislikes.Count;
+
+            if (problem.Author.UserName == User.Identity.Name)
+                return Json(new { l = likes, d = dislikes });
 
             bool haslike = likeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
             bool hasdislike = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
@@ -218,6 +225,9 @@ namespace MyWebApp.Controllers
             Problem problem = repository.GetByID(problemId);
             var likes = problem.Likes.Count;
             var dislikes = problem.Dislikes.Count;
+
+            if (problem.Author.UserName == User.Identity.Name)
+                return Json(new { l = likes, d = dislikes });
 
             bool haslike = likeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
             bool hasdislike = dislikeRepository.Get().Where(m => m.ProblemId == problemId).Count(m => m.User.UserName == User.Identity.Name) != 0;
@@ -275,6 +285,7 @@ namespace MyWebApp.Controllers
 
 
         [HttpPost]
+        [Authorize]
         public ActionResult UploadFile(HttpPostedFileBase myFile)
         {
             if (myFile == null)
@@ -298,6 +309,7 @@ namespace MyWebApp.Controllers
 
             return Json(uplPath);
         }
+
         #region helpers
 
         private ProblemViewModel GetProblemViewModel(Problem problem)
@@ -328,12 +340,6 @@ namespace MyWebApp.Controllers
             }
             sb.Remove(sb.Length - 1, 1);
             pvm.Answers = sb.ToString();
-
-            pvm.Images = new Collection<string>();
-            foreach (var image in problem.ImagesInside)
-            {
-                pvm.Tags.Add(image.Url);
-            }
 
             pvm.Comments = new List<CommentViewModel>();
             foreach (var comment in problem.Comments)
@@ -368,12 +374,6 @@ namespace MyWebApp.Controllers
             }
 
             repository.Insert(problem);
-            problem.ImagesInside = new Collection<Image>();
-            if (problemView.Images != null)
-                foreach (var image in problemView.Images)
-                {
-                    problem.ImagesInside.Add(new Image() { Url = image, ProblemId = problem.Id });
-                }
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             repository.Update(problem);
         }
@@ -386,19 +386,17 @@ namespace MyWebApp.Controllers
             problem.Text = problemView.Text;
             while (problem.CorrectAnswers.Count != 0)
                 answerRepository.Delete(problem.CorrectAnswers.ElementAt(0));
-            while (problem.ImagesInside.Count != 0)
-                imageRepository.Delete(problem.ImagesInside.ElementAt(0));
-            problem.ImagesInside = new Collection<Image>();
-            foreach (var image in problemView.Images)
-            {
-                problem.ImagesInside.Add(new Image() { Url = image, ProblemId = problem.Id });
-            }
+    
+       
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             problem.Tags = new Collection<Tag>();
             repository.Update(problem);
-            foreach (var tag in problemView.TagsString.Split(','))
+            if (!problemView.TagsString.IsNullOrWhiteSpace())
             {
-                problem.Tags.Add(tagRepository.GetByName(tag));
+                foreach (var tag in problemView.TagsString.Split(','))
+                {
+                    problem.Tags.Add(tagRepository.GetByName(tag));
+                }
             }
             repository.Update(problem);
         }

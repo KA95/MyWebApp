@@ -26,9 +26,13 @@ namespace MyWebApp
                       "~/Scripts/bootstrap.js",
                       "~/Scripts/respond.js"));
 
-            bundles.Add(new StyleBundle("~/Content/css").Include(
-                      "~/Content/bootstrap.css",
+            bundles.Add(new StyleBundle("~/Content/yeti").Include(
+                      "~/Content/bootstrap-yeti.css",
                       "~/Content/site.css"));
+
+            bundles.Add(new StyleBundle("~/Content/superhero").Include(
+                "~/Content/bootstrap-superhero.css",
+                "~/Content/site.css"));
 
             bundles.Add(new StyleBundle("~/Content/themes/base/css").Include(
                         "~/Content/themes/base/jquery.ui.core.css",
