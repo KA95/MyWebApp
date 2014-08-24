@@ -2,9 +2,11 @@
 using System.Collections.Generic;
 using System.Web;
 using System.Web.Mvc;
+using MyWebApp.Filters;
 
 namespace MyWebApp.Controllers
 {
+    [Culture]
     public class HomeController : Controller
     {
         public ActionResult Index()
@@ -51,31 +53,30 @@ namespace MyWebApp.Controllers
                 cookie.Expires = DateTime.Now.AddDays(100);
             }
             Response.Cookies.Add(cookie);
-            return Redirect(Request.UrlReferrer.AbsoluteUri);
+            return Redirect(Request.UrlReferrer.AbsolutePath);
         }
 
-        public ActionResult SetLanguage(string language = "english")
+        
+        public ActionResult ChangeCulture(string lang)
         {
-            var languages = new List<string> { "русский", "english" };
-            if (!languages.Contains(language))
-            {
-                language = "english";
-            }
-            HttpCookie cookie = Request.Cookies["language"];
-
-            if (cookie != null)
-            {
-                cookie.Value = language;
-            }
+            string urlToReturn = Request.UrlReferrer.AbsolutePath;
+            HttpCookie cookie = Request.Cookies["lang"];
+            if (cookie == null)
+                cookie =AddLanguageToCookie(lang);
             else
-            {
-                cookie = new HttpCookie("language");
-                cookie.Value = language;
-                cookie.HttpOnly = false;
-                cookie.Expires = DateTime.Now.AddDays(100);
-            }
-            Response.Cookies.Add(cookie);
-            return Redirect(Request.UrlReferrer.AbsoluteUri);
+                cookie.Value = lang;
+            this.Response.Cookies.Add(cookie);
+            return Redirect(urlToReturn);
         }
+
+        private HttpCookie AddLanguageToCookie(string localizationValue)
+        {
+            var cookie = new HttpCookie("lang");
+            cookie.HttpOnly = false;
+            cookie.Value = localizationValue;
+            cookie.Expires = DateTime.Now.AddYears(1);
+            return cookie;
+        }
+
     }
 }

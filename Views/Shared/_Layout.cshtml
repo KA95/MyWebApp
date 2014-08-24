@@ -3,7 +3,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>@ViewBag.Title - My application</title>
+    <title>@ViewBag.Title - Problembook</title>
     @Scripts.Render("~/bundles/modernizr")
 
     @if (Request.Cookies["theme"] == null || Request.Cookies["theme"].Value == "superhero")
@@ -26,20 +26,20 @@
                     <span class="icon-bar"></span>
                     <span class="icon-bar"></span>
                 </button>
-                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+                @Html.ActionLink("Problembook", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
             </div>
             <div class="navbar-collapse collapse">
                 <ul class="nav navbar-nav">
-                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink(@Resources.Resource.Home, "Index", "Home")</li>
                     @if (User.IsInRole("admin"))
                     {
-                        <li>@Html.ActionLink("Admin", "Index", "Admin")</li>
+                        <li>@Html.ActionLink(@Resources.Resource.Admin, "Index", "Admin")</li>
                     }
-                    <li>@Html.ActionLink("Users", "Index", "User")</li>
-                    <li>@Html.ActionLink("Problems", "Index", "Problem")</li>
-                    <li>@Html.ActionLink("Markdown demo", "Markdown", "Home")</li>
-                    <li>@Html.ActionLink("About", "About", "Home")</li>
-                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                    <li>@Html.ActionLink(@Resources.Resource.Users, "Index", "User")</li>
+                    <li>@Html.ActionLink(@Resources.Resource.Problems, "Index", "Problem")</li>
+                    @*<li>@Html.ActionLink("Markdown demo", "Markdown", "Home")</li>*@
+                    <li>@Html.ActionLink(@Resources.Resource.About, "About", "Home")</li>
+                    <li>@Html.ActionLink(@Resources.Resource.Contact, "Contact", "Home")</li>
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown">Theme<b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="theme-selector">
@@ -48,13 +48,13 @@
                         </ul>
                     </li>
                     
-                    @*<li class="dropdown">
+                    <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown">Language<b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="theme-selector">
-                            <li role="presentation">@Html.ActionLink("Русский", "SetLanguage", "Home", new { theme = "русский" }, null)</li>
-                            <li role="presentation">@Html.ActionLink("English", "SetLanguage", "Home", new { theme = "english" }, null)</li>
+                            <li role="presentation">@Html.ActionLink("Русский", "ChangeCulture", "Home", new { lang = "ru" }, null)</li>
+                            <li role="presentation">@Html.ActionLink("English", "ChangeCulture", "Home", new { lang = "en" }, null)</li>
                         </ul>
-                    </li>*@
+                    </li>
 
                 </ul>
                 @Html.Partial("_LoginPartial")
