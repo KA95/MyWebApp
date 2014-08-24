@@ -36,13 +36,13 @@ namespace MyWebApp.Controllers
 
         }
 
-        
+        [HttpPost]
         public ActionResult Search(string searchingString)
         {
            
             if (string.IsNullOrWhiteSpace(searchingString))
             {
-                return RedirectToAction(Request.UrlReferrer.AbsolutePath);
+                return Redirect(Request.UrlReferrer.AbsolutePath);
             }
             var searchUsingLucene = new LuceneSearch(problemRepository,UserManager);
             var foundIds = searchUsingLucene.SearchResult(searchingString);

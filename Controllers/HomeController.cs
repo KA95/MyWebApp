@@ -38,7 +38,6 @@ namespace MyWebApp.Controllers
             }
         }
 
-
         public HomeController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository, ICommentRepository commentRepository)
         {
             this.problemRepository = repository;
@@ -65,45 +64,7 @@ namespace MyWebApp.Controllers
             return View(model);
         }
 
-        private IList<HomepageUser> GetTopUsers()
-        {
-            IList<ApplicationUser> users = UserManager.Users.ToList();
-            users = users.OrderByDescending(m => m.Rating).Take(10 < users.Count() ? 10 : users.Count()).ToList();
-            return users.Select(user => new HomepageUser
-            {
-                Name = user.UserName,
-                Rating = user.Rating
-            }).ToList();
-
-        }
-
-        private IList<HomepageProblem> GetPopularProblems()
-        {
-            IList<Problem> problems = problemRepository.Get().ToList();
-            problems = problems.OrderByDescending(problem => problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count).Take(10 < problems.Count() ? 10 : problems.Count()).ToList();
-            return problems.Select(problem => new HomepageProblem
-            {
-                Name = problem.Name,
-                Category = problem.Category.Name,
-                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
-                Id = problem.Id
-            }).ToList();
-        }
-
-        private IList<HomepageProblem> GetRecentProblems()
-        {
-            IList<Problem> problems = problemRepository.Get().ToList();
-            problems = problems.OrderByDescending(m => m.Id).Take(10 < problems.Count() ? 10 : problems.Count()).ToList();                          
-            return problems.Select(problem => new HomepageProblem
-            {
-                Name = problem.Name, 
-                Category = problem.Category.Name, 
-                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
-                Id = problem.Id
-            }).ToList();
-
-        }
-        public ActionResult Markdown()
+         public ActionResult Markdown()
         {
             return View();
         }
@@ -148,14 +109,13 @@ namespace MyWebApp.Controllers
      
         public ActionResult ChangeCulture(string lang)
         {
-            string urlToReturn = Request.UrlReferrer.AbsolutePath;
             HttpCookie cookie = Request.Cookies["lang"];
             if (cookie == null)
                 cookie =AddLanguageToCookie(lang);
             else
                 cookie.Value = lang;
             this.Response.Cookies.Add(cookie);
-            return Redirect(urlToReturn);
+            return Redirect(Request.UrlReferrer.AbsolutePath);
         }
 
         private HttpCookie AddLanguageToCookie(string localizationValue)
@@ -176,5 +136,47 @@ namespace MyWebApp.Controllers
 
             return Json(tagStrings.ToArray(), JsonRequestBehavior.AllowGet);
         }
+       
+        private IList<HomepageUser> GetTopUsers()
+        {
+            IList<ApplicationUser> users = UserManager.Users.ToList();
+            users = users.OrderByDescending(m => m.Rating).Take(10 < users.Count() ? 10 : users.Count()).ToList();
+            return users.Select(user => new HomepageUser
+            {
+                Name = user.UserName,
+                Rating = user.Rating
+            }).ToList();
+
+        }
+
+        private IList<HomepageProblem> GetPopularProblems()
+        {
+            IList<Problem> problems = problemRepository.Get().ToList();
+            problems = problems.OrderByDescending(problem => problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count).Take(10 < problems.Count() ? 10 : problems.Count()).ToList();
+            return problems.Select(problem => new HomepageProblem
+            {
+                Name = problem.Name,
+                Category = problem.Category.Name,
+                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
+                Id = problem.Id
+            }).ToList();
+        }
+
+        private IList<HomepageProblem> GetRecentProblems()
+        {
+            IList<Problem> problems = problemRepository.Get().ToList();
+            problems = problems.OrderByDescending(m => m.Id).Take(10 < problems.Count() ? 10 : problems.Count()).ToList();
+            return problems.Select(problem => new HomepageProblem
+            {
+                Name = problem.Name,
+                Category = problem.Category.Name,
+                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
+                Id = problem.Id
+            }).ToList();
+
+        }
+  
     }
+
+
 }
