@@ -85,7 +85,8 @@ namespace MyWebApp.Controllers
             {
                 Name = problem.Name,
                 Category = problem.Category.Name,
-                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count
+                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
+                Id = problem.Id
             }).ToList();
         }
 
@@ -95,7 +96,10 @@ namespace MyWebApp.Controllers
             problems = problems.OrderByDescending(m => m.Id).Take(10 < problems.Count() ? 10 : problems.Count()).ToList();                          
             return problems.Select(problem => new HomepageProblem
             {
-                Name = problem.Name, Category = problem.Category.Name, Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count
+                Name = problem.Name, 
+                Category = problem.Category.Name, 
+                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
+                Id = problem.Id
             }).ToList();
 
         }
@@ -118,12 +122,12 @@ namespace MyWebApp.Controllers
             return View();
         }
 
-        public ActionResult SetTheme(string theme="superhero")
+        public ActionResult SetTheme(string theme="slate")
         {
-            var themes= new List<string>{"yeti","superhero"};
+            var themes= new List<string>{"yeti","slate"};
             if (!themes.Contains(theme))
             {
-                theme = "superhero";
+                theme = "slate";
             }
             HttpCookie cookie = Request.Cookies["theme"];
 

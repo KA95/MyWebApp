@@ -43,7 +43,7 @@
                 }),
             error:
                 (function (data) {
-                    alert("Please log in.");
+                    alert("Some error");
                 })
         });
     });

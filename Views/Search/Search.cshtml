@@ -1,0 +1,62 @@
+﻿@model MyWebApp.ViewModels.SearchResultModel
+@{
+    ViewBag.Title = "Search";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Search</h2>
+
+<ul class="nav nav-tabs">
+<li class=""><a href="#users" data-toggle="tab">Users</a></li>
+<li class="active"><a href="#problems" data-toggle="tab">Problems</a></li>
+</ul>
+<div id="myTabContent" class="tab-content">
+    <div class="tab-pane fade" id="users">
+        <table title="Users" class="table table-striped table-hover ">
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Rating</th>
+                </tr>
+            </thead>
+            @foreach (var user in Model.Users)
+            {
+                <tr>
+                    <th>
+                        @user.UserName
+                    </th>
+                    <th>
+                        @user.Rating
+                    </th>
+                </tr>
+            }
+        </table>
+    </div>
+    <div class="tab-pane fade active in" id="problems">
+        <table title="Problems" class="table table-striped table-hover ">
+            <thead>
+                <tr>
+                    <th>Problem</th>
+                    <th>Author</th>
+                    <th>Category</th>
+                </tr>
+            </thead>
+            @foreach (var problem in Model.Problems)
+            {
+                <tr>
+                    <th>
+                        @Html.ActionLink(problem.Name, "Show", "Problem", new { id = problem.Id }, null)
+                    </th>
+                    <th>
+                        @problem.Author.UserName
+                    </th>
+                    <th>
+                        @problem.Category.Name
+                    </th>
+
+                </tr>
+            }
+        </table>
+    </div>
+    
+</div>

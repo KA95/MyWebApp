@@ -3,6 +3,7 @@ using System.Threading;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Ajax.Utilities;
+using Microsoft.Owin.Security.Provider;
 using MyWebApp.Helpers;
 using MyWebApp.Models;
 using MyWebApp.ViewModels;
@@ -282,9 +283,12 @@ namespace MyWebApp.Controllers
         }
 
         [HttpPost]
-        [Authorize]
+      
         public ActionResult AddComment(int problemId, string commentText)
         {
+            if (!User.Identity.IsAuthenticated)
+                return RedirectToAction("Login", "Account");
+
             if (string.IsNullOrWhiteSpace(commentText))
                 return Json(new { commentHtml = "" });
 

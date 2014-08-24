@@ -6,9 +6,9 @@
     <title>@ViewBag.Title - Problembook</title>
     @Scripts.Render("~/bundles/modernizr")
 
-    @if (Request.Cookies["theme"] == null || Request.Cookies["theme"].Value == "superhero")
+    @if (Request.Cookies["theme"] == null || Request.Cookies["theme"].Value == "slate")
     {
-        @Styles.Render("~/Content/superhero")
+        @Styles.Render("~/Content/slate")
     }
     else
     {
@@ -43,7 +43,7 @@
                     <li class="dropdown">
                         <a class="dropdown-toggle" data-toggle="dropdown">@Resources.Resource.Theme<b class="caret"></b></a>
                         <ul class="dropdown-menu" role="menu" aria-labelledby="theme-selector">
-                            <li role="presentation">@Html.ActionLink("Superhero", "SetTheme", "Home", new { theme = "superhero" }, null)</li>
+                            <li role="presentation">@Html.ActionLink("Slate", "SetTheme", "Home", new { theme = "slate" }, null)</li>
                             <li role="presentation">@Html.ActionLink("Yeti", "SetTheme", "Home", new { theme = "yeti" }, null)</li>
                         </ul>
                     </li>
@@ -57,6 +57,11 @@
                     </li>
 
                 </ul>
+                <form class="navbar-form navbar-left" action="/Search/Search">
+                    <input class="form-control col-lg-8" placeholder="Search" type="text">
+                </form>
+
+
                 @Html.Partial("_LoginPartial")
             </div>
         </div>
