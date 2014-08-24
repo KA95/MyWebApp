@@ -1,17 +1,26 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using MyWebApp.Filters;
+using MyWebApp.Models;
+using MyWebApp.Repositories.Interfaces;
 
 namespace MyWebApp.Controllers
 {
     [Culture]
     public class HomeController : Controller
     {
+        private readonly ITagRepository tagRepository;
+
+        public HomeController(ITagRepository tagRepository)
+        {
+            this.tagRepository = tagRepository;
+        }
         public ActionResult Index()
         {
-            return View();
+            return View( tagRepository.Get().OrderBy(m=>m.Problems.Count));
         }
         public ActionResult Markdown()
         {
@@ -55,8 +64,7 @@ namespace MyWebApp.Controllers
             Response.Cookies.Add(cookie);
             return Redirect(Request.UrlReferrer.AbsolutePath);
         }
-
-        
+     
         public ActionResult ChangeCulture(string lang)
         {
             string urlToReturn = Request.UrlReferrer.AbsolutePath;
@@ -78,5 +86,14 @@ namespace MyWebApp.Controllers
             return cookie;
         }
 
+        public JsonResult GetTagStrings()
+        {
+            IEnumerable<Tag> tags = tagRepository.Get();
+
+            IEnumerable<string> tagStrings = from tag in tags
+                select tag.Name;
+
+            return Json(tagStrings.ToArray(), JsonRequestBehavior.AllowGet);
+        }
     }
 }

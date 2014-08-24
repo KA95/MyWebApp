@@ -149,5 +149,14 @@ namespace Resources {
                 return ResourceManager.GetString("Users", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Welcome to Problembook. Here you can solve different problems and compete with your friends..
+        /// </summary>
+        public static string Welcome {
+            get {
+                return ResourceManager.GetString("Welcome", resourceCulture);
+            }
+        }
     }
 }

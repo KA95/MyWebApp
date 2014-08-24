@@ -147,4 +147,7 @@
   <data name="Users" xml:space="preserve">
     <value>Пользователи</value>
   </data>
+  <data name="Welcome" xml:space="preserve">
+    <value>Добро пожаловать на Problembook. Здесь Вы можете решать интересные задачи и соревноваться с друзьями.</value>
+  </data>
 </root>

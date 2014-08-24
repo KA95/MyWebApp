@@ -132,7 +132,7 @@
     </Reference>
     <Reference Include="WebActivatorEx, Version=2.0.0.0, Culture=neutral, PublicKeyToken=7b26dc2a43f6a0d4, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\WebActivatorEx.2.0.2\lib\net40\WebActivatorEx.dll</HintPath>
+      <HintPath>..\packages\WebActivatorEx.2.0.4\lib\net40\WebActivatorEx.dll</HintPath>
     </Reference>
     <Reference Include="WebGrease, Version=1.5.2.14234, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -187,6 +187,7 @@
     <Compile Include="App_Start\NinjectWebCommon.cs" />
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="App_Start\TypeaheadBundleConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
@@ -350,11 +351,16 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="Content\Site.css" />
+    <Content Include="Scripts\jquery.tagcanvas.js" />
+    <Content Include="Scripts\jquery.tagcanvas.min.js" />
+    <Content Include="Scripts\tagcanvas.js" />
     <Content Include="Resources\1.png" />
     <Content Include="Resources\2.png" />
     <Content Include="Resources\3.png" />
     <Content Include="Resources\4.png" />
     <Content Include="Resources\5.png" />
+    <Content Include="Scripts\bloodhound.js" />
+    <Content Include="Scripts\bloodhound.min.js" />
     <Content Include="Scripts\bootstrap-markdown.js" />
     <Content Include="Scripts\bootstrap-tagsinput-angular.js" />
     <Content Include="Scripts\bootstrap-tagsinput-angular.min.js" />
@@ -363,6 +369,7 @@
     <Content Include="Scripts\bootstrap.js" />
     <Content Include="Scripts\bootstrap.min.js" />
     <Content Include="Scripts\bootstrap-tagsinput.min.js.map" />
+    <Content Include="data\countries.json" />
     <None Include="Scripts\jquery-2.1.1.intellisense.js" />
     <Content Include="Scripts\compile.js" />
     <Content Include="Scripts\CreateEditScript.js" />
@@ -384,7 +391,12 @@
     <Content Include="Scripts\markdown.js" />
     <Content Include="Scripts\modernizr-2.6.2.js" />
     <Content Include="Scripts\problemShowScript.js" />
+    <Content Include="Scripts\TagScript.js" />
     <Content Include="Scripts\to-markdown.js" />
+    <Content Include="Scripts\typeahead.bundle.js" />
+    <Content Include="Scripts\typeahead.bundle.min.js" />
+    <Content Include="Scripts\typeahead.jquery.js" />
+    <Content Include="Scripts\typeahead.jquery.min.js" />
     <Content Include="Scripts\_references.js" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

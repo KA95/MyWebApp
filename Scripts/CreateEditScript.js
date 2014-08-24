@@ -1,4 +1,5 @@
-﻿(function () {
+﻿
+(function () {
 
     var bar = $('.progress-bar');
     var percent = $('.percent');
