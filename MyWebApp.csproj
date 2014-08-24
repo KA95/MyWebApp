@@ -198,6 +198,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Helpers\GlobalHelper.cs" />
     <Compile Include="Helpers\MarkdownHelper.cs" />
     <Compile Include="Migrations\201408081506381_mig.cs" />
     <Compile Include="Migrations\201408081506381_mig.Designer.cs">
@@ -281,6 +282,9 @@
       <DependentUpon>Resource.ru.resx</DependentUpon>
     </Compile>
     <Compile Include="ValidationAttributes\CorrectSetOfAnswersAttribute.cs" />
+    <Compile Include="ViewModels\HomepageProblem.cs" />
+    <Compile Include="ViewModels\HomepageUser.cs" />
+    <Compile Include="ViewModels\HomepageViewModel.cs" />
     <Compile Include="ViewModels\CommentViewModel.cs" />
     <Compile Include="ViewModels\ProblemViewModels.cs" />
     <Compile Include="Models\TagModels.cs" />
@@ -442,6 +446,8 @@
     <Content Include="Views\Problem\Tutorial.cshtml" />
     <Content Include="Views\Problem\_CommentView.cshtml" />
     <Content Include="Views\Problem\UploadImage.cshtml" />
+    <Content Include="Views\Home\_HomepageProblem.cshtml" />
+    <Content Include="Views\Home\_HomepageUser.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

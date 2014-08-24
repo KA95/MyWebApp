@@ -85,7 +85,7 @@ namespace MyWebApp.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new ApplicationUser() { UserName = model.Username, Email = model.Email };
+                var user = new ApplicationUser() { UserName = model.Username, Email = model.Email ,Rating = 0};
                 IdentityResult result = await UserManager.CreateAsync(user, model.Password);
                 if (result.Succeeded)
                 {
@@ -400,7 +400,7 @@ namespace MyWebApp.Controllers
                 {
                     return View("ExternalLoginFailure");
                 }
-                var user = new ApplicationUser() { UserName = model.Username, Email = model.Email };
+                var user = new ApplicationUser() { UserName = model.Username, Email = model.Email, Rating = 0 };
                 IdentityResult result = await UserManager.CreateAsync(user);
                 if (result.Succeeded)
                 {

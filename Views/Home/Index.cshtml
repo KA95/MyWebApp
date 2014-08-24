@@ -1,4 +1,4 @@
-﻿@model IEnumerable<MyWebApp.Models.Tag>
+﻿@model MyWebApp.ViewModels.HomepageViewModel
 @{
     ViewBag.Title = "Home Page";
 }
@@ -13,7 +13,7 @@
                 depth: 0.8,
                 maxSpeed: 0.05,
                 weight: true
-        });
+            });
         } catch (e) {
             document.getElementById('myCanvasContainer').style.display = 'none';
         }
@@ -37,22 +37,22 @@
                 </canvas>
             </div>
             <div id="tags">
-                
-                    @{
-                        double size = 10;
-                        int count = Model.Count();
-                        double step = 40/count;
-                        foreach (var tag in Model)
-                        {
-                            //string link = "/Exercise/ShowExercisesWithTag?tag=" + tag.Text;
-                            string style = String.Format("font-size: {0}pt", size);
-                            size += step;
 
-                            <a style="@style">@tag.Name</a>
-                        }
+                @{
+                    double size = 10;
+                    int count = Model.Tags.Count();
+                    double step = 40 / count;
+                    foreach (var tag in Model.Tags)
+                    {
+                        //string link = "/Exercise/ShowExercisesWithTag?tag=" + tag.Text;
+                        string style = String.Format("font-size: {0}pt", size);
+                        size += step;
 
+                        <a style="@style">@tag.Name</a>
                     }
-                
+
+                }
+
             </div>
         </div>
     </div>
@@ -61,24 +61,28 @@
 <div class="row">
     <div class="col-md-4 panel panel-success">
         <div class="panel-heading">
-            <h2>Most popular tasks</h2>
+            <h2>Most popular problems</h2>
         </div>
         <div class="panel-body">
-            <p>
-                ASP.NET MVC gives you a powerful, patterns-based way to build dynamic websites that
-                enables a clean separation of concerns and gives you full control over markup
-                for enjoyable, agile development.
-            </p>
+            <table class="table table-hover">
+                @foreach (var problem in Model.PopularProblems)
+                {
+                    @Html.Partial("_HomepageProblem", problem)
+                }
+            </table>
         </div>
-        <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301865">Learn more &raquo;</a></p>
     </div>
     <div class="col-md-4 panel panel-info">
         <div class="panel-heading">
-            <h2>Most recent tasks</h2>
+            <h2>Most recent problems</h2>
         </div>
         <div class="panel-body">
-            <p>NuGet is a free Visual Studio extension that makes it easy to add, remove, and update libraries and tools in Visual Studio projects.</p>
-            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301866">Learn more &raquo;</a></p>
+            <table class="table table-hover">
+                @foreach (var problem in Model.RecentProblems)
+                {
+                    @Html.Partial("_HomepageProblem", problem)
+                }
+            </table>
         </div>
     </div>
     <div class="col-md-4 panel panel-danger">
@@ -86,10 +90,12 @@
             <h2>Top-rated users</h2>
         </div>
         <div class="panel-body">
-
-
-            <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-            <p><a class="btn btn-default" href="http://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+            <table class="table table-hover">
+                @foreach (var user in Model.TopUsers)
+                {
+                    @Html.Partial("_HomepageUser", user)
+                }
+            </table>
         </div>
     </div>
 

@@ -1,7 +1,9 @@
 ﻿using System.IO;
+using System.Threading;
 using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Ajax.Utilities;
+using MyWebApp.Helpers;
 using MyWebApp.Models;
 using MyWebApp.ViewModels;
 using System;
@@ -14,7 +16,6 @@ using Microsoft.AspNet.Identity.Owin;
 using MyWebApp.Repositories.Interfaces;
 using System.Collections.ObjectModel;
 using MarkdownDeep;
-using System.Text;
 
 namespace MyWebApp.Controllers
 {
@@ -22,7 +23,7 @@ namespace MyWebApp.Controllers
     public class ProblemController : Controller
     {
 
-        private readonly IProblemRepository repository;
+        private readonly IProblemRepository problemRepository;
         private readonly ICategoryRepository categoryRepository;
         private readonly IAnswerRepository answerRepository;
         private readonly IUserSolvedRepository userSolvedRepository;
@@ -33,9 +34,9 @@ namespace MyWebApp.Controllers
         private readonly IDislikeRepository dislikeRepository;
         private readonly ICommentRepository commentRepository;
 
-        public ProblemController(IProblemRepository repository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository, ICommentRepository commentRepository)
+        public ProblemController(IProblemRepository problemRepository, ICategoryRepository categoryRepository, IAnswerRepository answerRepository, IUserSolvedRepository userSolvedRepository, IUserAttemptedRepository userAttemptedRepository, IImageRepository imageRepository, ITagRepository tagRepository, ILikeRepository likeRepository, IDislikeRepository dislikeRepository, ICommentRepository commentRepository)
         {
-            this.repository = repository;
+            this.problemRepository = problemRepository;
             this.categoryRepository = categoryRepository;
             this.answerRepository = answerRepository;
             this.userAttemptedRepository = userAttemptedRepository;
@@ -63,13 +64,13 @@ namespace MyWebApp.Controllers
 
         public ActionResult Index()
         {
-            return View(repository.Get());
+            return View(problemRepository.Get());
         }
 
         [HttpGet]
         public ActionResult Show(int id)
         {
-            Problem problem = repository.GetByID(id);
+            Problem problem = problemRepository.GetByID(id);
 
             var md = new Markdown();
             problem.Text = md.Transform(problem.Text);
@@ -81,15 +82,16 @@ namespace MyWebApp.Controllers
                 select userSolution;
 
             //usersSolved.Contains()
-            var pvm = GetProblemViewModel(problem);
+            var pvm = GlobalHelper.GetProblemViewModel(problem);
             pvm.Solved = userProblem.Count() != 0;
             pvm.Answers = "";
             return View(pvm);
         }
 
+
         [HttpPost]
         [Authorize]
-        public ActionResult Show(ProblemViewModel problemView)
+        public ActionResult Show(ProblemViewModel problemView)//Actually it's Solve method.
         {
             if (problemView.Author == User.Identity.Name)
             {
@@ -98,13 +100,23 @@ namespace MyWebApp.Controllers
 
             }
 
-            Problem problem = repository.GetByID(problemView.Id);
-            var pvm = GetProblemViewModel(problem);
+            Problem problem = problemRepository.GetByID(problemView.Id);
+            var pvm = GlobalHelper.GetProblemViewModel(problem);
             pvm.Solved = false;
             if (ModelState.IsValidField("Answers"))
                 if (AreEqual(GetAnswersFromString(problemView.Answers, problem), problem.CorrectAnswers))
                 {
                     userSolvedRepository.Insert(new UserSolvedProblem { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
+                    var user = UserManager.FindByName(User.Identity.Name);
+                    int attempts= (from attempt in user.AttemptedProblems
+                                       where attempt.User==user
+                                       select attempt).Count();
+                    double rating = 100;
+                    for (int i = 0; i < attempts; i++)
+                        rating *= 0.95;
+
+                    user.Rating += (int)rating;
+                    UserManager.Update(user);
                     pvm.Solved = true;
                 }
                 else
@@ -148,10 +160,16 @@ namespace MyWebApp.Controllers
         [Authorize]
         public ActionResult Edit(int id)
         {
-
+            
             ViewBag.Button = "Edit";
-            Problem problem = repository.GetByID(id);
-            var pvm = GetProblemViewModel(problem);
+            Problem problem = problemRepository.GetByID(id);
+
+            if (problem.Author.UserName != User.Identity.Name && !User.IsInRole("admin"))
+            {
+                return RedirectToAction("Index");
+            }
+
+            var pvm = GlobalHelper.GetProblemViewModel(problem);
             if (pvm.Images == null)
                 pvm.Images = new Collection<string>();
 
@@ -175,7 +193,7 @@ namespace MyWebApp.Controllers
         [Authorize]
         public JsonResult Like(int problemId)
         {
-            Problem problem = repository.GetByID(problemId);
+            Problem problem = problemRepository.GetByID(problemId);
 
             
             var likes = problem.Likes.Count;
@@ -222,7 +240,7 @@ namespace MyWebApp.Controllers
         [Authorize]
         public JsonResult Dislike(int problemId)
         {
-            Problem problem = repository.GetByID(problemId);
+            Problem problem = problemRepository.GetByID(problemId);
             var likes = problem.Likes.Count;
             var dislikes = problem.Dislikes.Count;
 
@@ -312,49 +330,6 @@ namespace MyWebApp.Controllers
 
         #region helpers
 
-        private ProblemViewModel GetProblemViewModel(Problem problem)
-        {
-            var pvm = new ProblemViewModel();
-            pvm.Author = problem.Author.UserName;
-            pvm.Name = problem.Name;
-            pvm.Text = problem.Text;
-            pvm.Id = problem.Id;
-            pvm.SelectedCategoryId = problem.CategoryId;
-            pvm.Category = problem.Category.Name;
-
-            var sb = new StringBuilder();
-            foreach (var tag in problem.Tags)
-            {
-                sb.Append(tag.Name);
-                sb.Append(',');
-            }
-
-            pvm.TagsString = sb.ToString();
-
-            sb.Clear();
-
-            foreach (var ans in problem.CorrectAnswers)
-            {
-                sb.Append(ans.Text);
-                sb.Append(';');
-            }
-            sb.Remove(sb.Length - 1, 1);
-            pvm.Answers = sb.ToString();
-
-            pvm.Comments = new List<CommentViewModel>();
-            foreach (var comment in problem.Comments)
-            {
-                CommentViewModel com = new CommentViewModel() { AddingTime = comment.dateTime, AuthorName = comment.User.UserName, ProblemId = problem.Id, Text = comment.Text };
-                pvm.Comments.Add(com);
-            }
-
-            // pvm.Solved=problem.UsersWhoSolved.Contains()
-
-            pvm.Likes = problem.Likes.Count;
-            pvm.Dislikes = problem.Dislikes.Count;
-            return pvm;
-        }
-
         public void AddProblemFromView(ProblemViewModel problemView)
         {
 
@@ -373,14 +348,14 @@ namespace MyWebApp.Controllers
                 problem.Tags.Add(tagRepository.GetByName(tag));
             }
 
-            repository.Insert(problem);
+            problemRepository.Insert(problem);
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
-            repository.Update(problem);
+            problemRepository.Update(problem);
         }
 
         public void UpdateProblemFromView(ProblemViewModel problemView)
         {
-            Problem problem = repository.GetByID(problemView.Id);
+            Problem problem = problemRepository.GetByID(problemView.Id);
             problem.CategoryId = problemView.SelectedCategoryId;
             problem.Name = problemView.Name;
             problem.Text = problemView.Text;
@@ -390,7 +365,7 @@ namespace MyWebApp.Controllers
        
             problem.CorrectAnswers = GetAnswersFromString(problemView.Answers, problem);
             problem.Tags = new Collection<Tag>();
-            repository.Update(problem);
+            problemRepository.Update(problem);
             if (!problemView.TagsString.IsNullOrWhiteSpace())
             {
                 foreach (var tag in problemView.TagsString.Split(','))
@@ -398,7 +373,7 @@ namespace MyWebApp.Controllers
                     problem.Tags.Add(tagRepository.GetByName(tag));
                 }
             }
-            repository.Update(problem);
+            problemRepository.Update(problem);
         }
 
         private ICollection<Answer> GetAnswersFromString(string answers, Problem problem)
