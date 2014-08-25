@@ -1,10 +1,13 @@
 ﻿using System.Web;
 using System.Web.Mvc;
+using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using MyWebApp.Filters;
 using MyWebApp.Repositories.Interfaces;
 
 namespace MyWebApp.Controllers
 {
+    [Culture]
     public class UserController : Controller
     {
          private readonly IProblemRepository problemRepository;
@@ -50,12 +53,12 @@ namespace MyWebApp.Controllers
         // GET: User
         public ActionResult Index()
         {
-            return View();
+            return View(UserManager.Users);
         }
 
         public ActionResult Show(string id)
         {
-            return View();
+            return View(UserManager.FindById(id));
         }
 
     }

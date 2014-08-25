@@ -14,6 +14,7 @@
                     <th>Category</th>
                     <th>Rating</th>
                     <th>Solved</th>
+                    <th>Blocked</th>
                 </tr>
             </thead>
             @foreach (var problem in Model)
@@ -33,6 +34,9 @@
                     </th>
                     <th>
                         @problem.UsersWhoSolved.Count()
+                    </th>
+                    <th>
+                        @problem.IsBlocked
                     </th>
                     
                 </tr>

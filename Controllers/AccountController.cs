@@ -4,10 +4,12 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
+using MyWebApp.Filters;
 using MyWebApp.Models;
 
 namespace MyWebApp.Controllers
 {
+    [Culture]
     [Authorize]
     public class AccountController : Controller
     {

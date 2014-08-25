@@ -48,7 +48,7 @@ namespace MyWebApp.Helpers
             spvm.Text = problem.Text;
             spvm.Id = problem.Id;
             spvm.Category = problem.Category.Name;
-
+            spvm.IsBlocked = problem.IsBlocked;
             var sb = new StringBuilder();
             foreach (var tag in problem.Tags)
             {

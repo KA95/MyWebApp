@@ -31,7 +31,7 @@
         <div class="container">
             @Html.TextBoxFor(model => model.TagsString, new Dictionary<string, object> { { "data-role", "tagsinput" }, { "type", "text" }, { "readonly", "" }, { "hidden", "" }, { "style", "maxheight:50px" } })
         </div>
-        @if (Model.IsSolved != true && Model.Author != User.Identity.Name && User.Identity.IsAuthenticated)
+        @if (Model.IsSolved != true && Model.Author != User.Identity.Name && User.Identity.IsAuthenticated && !Model.IsBlocked)
         {
             <div class="well">
                 @using (Html.BeginForm("Show", "Problem"))
@@ -58,15 +58,7 @@
                 }
             </div>
         }
-        else if (!User.Identity.IsAuthenticated)
-        {
-            <div class="well"> Log in to solve!</div>
-        }
-        else if (Model.Author == User.Identity.Name)
-        {
-            <div class="well"> You're autor!</div>
-        }
-        else
+        else if(Model.IsSolved)
         {
             <div class="well"> You solved it!</div>
         }
@@ -78,7 +70,7 @@
 
     </div>
 </div>
-@if (User.Identity.IsAuthenticated)
+@if (User.Identity.IsAuthenticated && !Model.IsBlocked)
 {
     <div class="jumbotron">
         <textarea id="commentTextBox" placeholder="Your comment" style="width: 60%"></textarea>
@@ -86,6 +78,8 @@
         <a id="addComment" class="btn btn-success">Add comment</a>
     </div>
 }
+<legend>Comments:</legend>
+<hr/>
 <div id="comments" style="width:60%">
     @foreach (var comment in Model.Comments)
     {

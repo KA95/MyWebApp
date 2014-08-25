@@ -1,8 +1,31 @@
-﻿
+﻿@using Microsoft.AspNet.Identity
+@model MyWebApp.Models.ApplicationUser
 @{
     ViewBag.Title = "Show";
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h2>Show</h2>
+<h2>@Model.UserName</h2>
+@if (Model.IsBlocked)
+{
+    <div class="alert alert-dismissable alert-warning">
+        <h4>User blocked!</h4>
+    </div>
+}
+else if(User.Identity.Name != Model.UserName && User.IsInRole("admin"))
+{
+    @Html.ActionLink("Lock", "LockUser", "Admin", new { id = Model.Id }, new{ @class="btn btn-danger"})
+
+}
+<div>
+    <ul class="list-group">
+        <li class="list-group-item">
+            @Model.Email
+        </li>
+        <li class="list-group-item">
+            <span class="badge">@Model.Rating</span>
+            Rating
+        </li>
+    </ul>
+</div>
 

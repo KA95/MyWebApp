@@ -4,6 +4,7 @@ using CloudinaryDotNet;
 using CloudinaryDotNet.Actions;
 using Microsoft.Ajax.Utilities;
 using Microsoft.Owin.Security.Provider;
+using MyWebApp.Filters;
 using MyWebApp.Helpers;
 using MyWebApp.Models;
 using MyWebApp.ViewModels;
@@ -20,7 +21,7 @@ using MarkdownDeep;
 
 namespace MyWebApp.Controllers
 {
-
+    [Culture]
     public class ProblemController : Controller
     {
 

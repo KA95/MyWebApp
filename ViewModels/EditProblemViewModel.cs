@@ -26,7 +26,7 @@ namespace MyWebApp.ViewModels
         public string Answers { get; set; }
 
         public int Id { get; set; }
-
+        [Display(Name = "Blocked")]
         public bool IsBlocked { get; set; }
 
         [Display(Name = "Tags")]

@@ -1,0 +1,45 @@
+﻿@model IEnumerable<MyWebApp.Models.Problem>
+@{
+    ViewBag.Title = "Tag";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>Tag</h2>
+
+<table title="Problems" class="table table-striped table-hover ">
+    <thead>
+        <tr>
+            <th>Problem</th>
+            <th>Author</th>
+            <th>Category</th>
+            <th>Rating</th>
+            <th>Solved</th>
+            <th>Blocked</th>
+        </tr>
+    </thead>
+    @foreach (var problem in Model)
+    {
+        <tr>
+            <th>
+                @Html.ActionLink(problem.Name, "Show", "Problem", new { id = problem.Id }, null)
+            </th>
+            <th>
+                @problem.Author.UserName
+            </th>
+            <th>
+                @problem.Category.Name
+            </th>
+            <th>
+                @(@problem.Likes.Count() - @problem.Dislikes.Count())
+            </th>
+            <th>
+                @problem.UsersWhoSolved.Count()
+            </th>
+            <th>
+                @problem.IsBlocked
+            </th>
+
+        </tr>
+    }
+</table>
+

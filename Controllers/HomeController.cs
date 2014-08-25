@@ -111,6 +111,11 @@ namespace MyWebApp.Controllers
             return Redirect(Request.UrlReferrer.AbsolutePath);
         }
 
+        public ActionResult Tag(string name)
+        {
+            return View(problemRepository.Get(m=>m.Tags.Contains(tagRepository.GetByName(name))));
+        }
+
         private HttpCookie AddLanguageToCookie(string localizationValue)
         {
             var cookie = new HttpCookie("lang");

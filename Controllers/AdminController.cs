@@ -2,10 +2,12 @@
 using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
+using MyWebApp.Filters;
 using MyWebApp.Repositories.Interfaces;
 //
 namespace MyWebApp.Controllers
 {
+    [Culture]
     [Authorize(Roles="admin")]
     public class AdminController : Controller
     {
@@ -60,11 +62,6 @@ namespace MyWebApp.Controllers
 
             UserManager.FindById(id).IsBlocked = true;
 
-            if (id != null)
-            {
-                UserManager.SetLockoutEnabled(id, true);
-            }
-
             return RedirectToAction("Users");
         }
         [HttpGet]
@@ -74,10 +71,7 @@ namespace MyWebApp.Controllers
                 return RedirectToAction("Users");
 
             UserManager.FindById(id).IsBlocked = false;
-            if (id != null)
-            {
-                UserManager.SetLockoutEnabled(id, false);
-            }
+          
             return RedirectToAction("Users");
         }
 

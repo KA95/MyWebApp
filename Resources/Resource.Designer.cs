@@ -9,6 +9,9 @@
 //------------------------------------------------------------------------------
 
 namespace Resources {
+    using System;
+    
+    
     /// <summary>
     ///   A strongly-typed resource class, for looking up localized strings, etc.
     /// </summary>
@@ -85,7 +88,7 @@ namespace Resources {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Hello.
+        ///   Looks up a localized string similar to Hello .
         /// </summary>
         public static string Hello {
             get {
