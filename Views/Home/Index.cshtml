@@ -47,8 +47,8 @@
                         //string link = "/Exercise/ShowExercisesWithTag?tag=" + tag.Text;
                         string style = String.Format("font-size: {0}pt", size);
                         size += step;
-
-                        <a href="Tag/@tag.Name" style="@style">@tag.Name</a>
+                        @Html.ActionLink(@tag.Name, "Tag", new { name = tag.Name }, new { @style = style})
+                        @*<a href="Tag@tag.Name" style="@style">@tag.Name</a>*@
                     }
 
                 }

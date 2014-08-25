@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -113,7 +114,10 @@ namespace MyWebApp.Controllers
 
         public ActionResult Tag(string name)
         {
-            return View(problemRepository.Get(m=>m.Tags.Contains(tagRepository.GetByName(name))));
+            IEnumerable<Problem> problems = from item in problemRepository.Get()
+                where item.Tags.Contains(tagRepository.GetByID(name))
+                select item;
+            return View(problems);
         }
 
         private HttpCookie AddLanguageToCookie(string localizationValue)
@@ -168,7 +172,7 @@ namespace MyWebApp.Controllers
             {
                 Name = problem.Name,
                 Category = problem.Category.Name,
-                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
+                Rating = problem.Likes.Count - problem.Dislikes.Count,
                 Id = problem.Id
             }).ToList();
 
