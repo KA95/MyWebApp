@@ -9,34 +9,31 @@ using MyWebApp.ValidationAttributes;
 
 namespace MyWebApp.ViewModels
 {
-    public class ProblemViewModel
+    public class EditProblemViewModel
     {
         [Required]
+        [Display(Name = "Name")]
         public string Name { get; set; }
         [Required]
         [AllowHtml]
+        [Display(Name = "Text")]
         public string Text { get; set; }
         [Required]
         public string Author { get; set; }
         [Required]
         [CorrectSetOfAnswers]
+        [Display(Name = "Answers")]
         public string Answers { get; set; }
 
+        public int Id { get; set; }
+
+        public bool IsBlocked { get; set; }
+
+        [Display(Name = "Tags")]
         public string TagsString { get; set; }
 
         public ICollection<string> Tags { get; set; }
-        public ICollection<string> Images { get; set; }
-        public ICollection<string> Videos { get; set; }
 
-        public int Id { get; set; }
-        public bool Solved { get; set; }
-
-        public int Likes { get; set; }
-        public int Dislikes { get; set; }
-
-        public string Category{ get; set; }
-
-        public List<CommentViewModel> Comments { get; set; }
         private readonly List<Category> _categories = new CategoryRepository(new ApplicationDbContext()).Get().ToList();
 
         public HttpPostedFileBase MyFile { get; set; }

@@ -9,7 +9,7 @@
         <thead>
             <tr>
                 <th>User</th>
-                @*<th>Solved</th>*@
+               <th>Raiting</th>
             </tr>
         </thead>
         @foreach (var user in Model)
@@ -18,14 +18,24 @@
                 <th>
                     @Html.ActionLink(user.UserName, "Show", "User", new { id = user.Id }, null)
                 </th>
-                @*<th>
-                    @user.SolvedProblems.Count
-                </th>*@
                 <th>
-                    @Html.ActionLink("Delete", "DeleteUser", "Admin", new { id = user.Id }, null)
+                    @user.Rating
                 </th>
                 <th>
-                    @Html.ActionLink("Edit", "Edit", "User", new { id = user.Id }, null)
+                    @if (user.UserName != User.Identity.Name)
+                    {
+                        if (!user.IsBlocked)
+                         {
+                             @Html.ActionLink("Lock", "LockUser", "Admin", new {id = user.Id}, null)
+                         }
+                         else
+                         {
+                             @Html.ActionLink("Unlock", "UnlockUser", "Admin", new { id = user.Id }, null)
+                         }
+                    }
+                </th>
+                <th>
+                    @Html.ActionLink("Reset password", "ResetPassword", "Admin", new { id = user.Id }, null)
                 </th>
             </tr>
         }

@@ -51,16 +51,44 @@ namespace MyWebApp.Controllers
             }
             return RedirectToAction("Problems");
         }
+
         [HttpGet]
-        public ActionResult DeleteUser(string id)
+        public ActionResult LockUser(string id)
         {
+            if (User.Identity.Name == UserManager.FindById(id).UserName)
+                return RedirectToAction("Users");
+
+            UserManager.FindById(id).IsBlocked = true;
+
             if (id != null)
             {
-                UserManager.Delete(UserManager.FindById(id));
+                UserManager.SetLockoutEnabled(id, true);
+            }
+
+            return RedirectToAction("Users");
+        }
+        [HttpGet]
+        public ActionResult UnlockUser(string id)
+        {
+            if (User.Identity.Name == UserManager.FindById(id).UserName)
+                return RedirectToAction("Users");
+
+            UserManager.FindById(id).IsBlocked = false;
+            if (id != null)
+            {
+                UserManager.SetLockoutEnabled(id, false);
             }
             return RedirectToAction("Users");
         }
 
+        [HttpGet]
+        public ActionResult ResetPassword(string id)
+        {
+            if (id != null)
+            {
+            }
+            return RedirectToAction("Users");
+        }
 
     }
 }

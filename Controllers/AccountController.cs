@@ -50,17 +50,19 @@ namespace MyWebApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<ActionResult> Login(LoginViewModel model, string returnUrl)
         {
+           
             if (ModelState.IsValid)
             {
                 var user = await UserManager.FindAsync(model.Username, model.Password);
-                if (user != null)
+                if (user != null && !user.IsBlocked)
                 {
+                    
                     await SignInAsync(user, model.RememberMe);
                     return RedirectToLocal(returnUrl);
                 }
                 else
                 {
-                    ModelState.AddModelError("", "Invalid email or password.");
+                    ModelState.AddModelError("", "Invalid email or password. Or blocked.");
                 }
             }
 
@@ -339,8 +341,14 @@ namespace MyWebApp.Controllers
 
             // Sign in the user with this external login provider if the user already has a login
             var user = await UserManager.FindAsync(loginInfo.Login);
+         
+
             if (user != null)
             {
+                if (user.IsBlocked)
+                {
+                    return RedirectToAction("Login");
+                }
                 await SignInAsync(user, isPersistent: false);
                 return RedirectToLocal(returnUrl);
             }

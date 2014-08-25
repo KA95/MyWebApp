@@ -9,6 +9,7 @@ namespace MyWebApp.Models
         public string Text { get; set; }
         public int CategoryId { get; set; }
         public string AuthorId { get; set; }
+        public bool IsBlocked { get; set; }
 
         public virtual ApplicationUser Author { get; set; }
         public virtual ICollection<Answer> CorrectAnswers { get; set; }

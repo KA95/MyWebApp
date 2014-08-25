@@ -1,4 +1,4 @@
-﻿@model MyWebApp.ViewModels.ProblemViewModel
+﻿@model MyWebApp.ViewModels.ShowProblemViewModel
 @{
     ViewBag.Title = "Show";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -14,15 +14,24 @@
         @Html.Hidden("problemId", @Model.Id, new { @id = "problemId" })
 
     </div>
-    <div class="col-md-5">
-        <div class="container">
-            <a class="btn btn-warning">@Model.Category</a>
+    <div class="col-md-5 ">
+        <div class="row">
+            <div class="container col-md-2">
+                <a class="btn btn-warning">@Model.Category</a>
+            </div>
+            @if (User.Identity.Name == Model.Author || User.IsInRole("admin"))
+            {
+                <div class="container col-md-2">
+                    @Html.ActionLink("Edit", "Edit", "Problem", new { id = Model.Id }, new { @class = "btn btn-success" })
+                </div>
+            }
         </div>
+
         <br />
         <div class="container">
             @Html.TextBoxFor(model => model.TagsString, new Dictionary<string, object> { { "data-role", "tagsinput" }, { "type", "text" }, { "readonly", "" }, { "hidden", "" }, { "style", "maxheight:50px" } })
         </div>
-        @if (Model.Solved != true && Model.Author != User.Identity.Name)
+        @if (Model.IsSolved != true && Model.Author != User.Identity.Name && User.Identity.IsAuthenticated)
         {
             <div class="well">
                 @using (Html.BeginForm("Show", "Problem"))
@@ -49,9 +58,13 @@
                 }
             </div>
         }
+        else if (!User.Identity.IsAuthenticated)
+        {
+            <div class="well"> Log in to solve!</div>
+        }
         else if (Model.Author == User.Identity.Name)
         {
-             <div class="well"> You're autor!</div>
+            <div class="well"> You're autor!</div>
         }
         else
         {
@@ -65,13 +78,14 @@
 
     </div>
 </div>
-
-<div class="jumbotron">
-    <textarea id="commentTextBox" placeholder="Your comment" style="width:60%"></textarea>
-    <br />
-    <a id="addComment" class="btn btn-success">Add comment</a>
-</div>
-
+@if (User.Identity.IsAuthenticated)
+{
+    <div class="jumbotron">
+        <textarea id="commentTextBox" placeholder="Your comment" style="width: 60%"></textarea>
+        <br />
+        <a id="addComment" class="btn btn-success">Add comment</a>
+    </div>
+}
 <div id="comments" style="width:60%">
     @foreach (var comment in Model.Comments)
     {

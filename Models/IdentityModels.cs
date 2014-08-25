@@ -11,6 +11,7 @@ namespace MyWebApp.Models
     public class ApplicationUser : IdentityUser
     {
         public int Rating { get; set; }
+        public bool IsBlocked { get; set; }
         public virtual ICollection<Problem> CreatedProblems { get; set; }
         public virtual ICollection<UserAttemptedProblem> AttemptedProblems { get; set; }
         public virtual ICollection<UserSolvedProblem> SolvedProblems { get; set; }
@@ -53,6 +54,7 @@ namespace MyWebApp.Models
         //                .WithRequired();
         //}
 
+       
         public static ApplicationDbContext Create()
         {
             return new ApplicationDbContext();

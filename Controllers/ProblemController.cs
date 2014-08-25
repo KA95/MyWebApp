@@ -69,8 +69,12 @@ namespace MyWebApp.Controllers
         }
 
         [HttpGet]
-        public ActionResult Show(int id)
+        public ActionResult Show(int ?id)
         {
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
             Problem problem = problemRepository.GetByID(id);
 
             var md = new Markdown();
@@ -83,8 +87,8 @@ namespace MyWebApp.Controllers
                 select userSolution;
 
             //usersSolved.Contains()
-            var pvm = GlobalHelper.GetProblemViewModel(problem);
-            pvm.Solved = userProblem.Count() != 0;
+            var pvm = GlobalHelper.GetShowProblemViewModel(problem);
+            pvm.IsSolved = userProblem.Count() != 0;
             pvm.Answers = "";
             return View(pvm);
         }
@@ -92,7 +96,7 @@ namespace MyWebApp.Controllers
 
         [HttpPost]
         [Authorize]
-        public ActionResult Show(ProblemViewModel problemView)//Actually it's Solve method.
+        public ActionResult Show(ShowProblemViewModel problemView)//Actually it's Solve method.
         {
             if (problemView.Author == User.Identity.Name)
             {
@@ -102,10 +106,10 @@ namespace MyWebApp.Controllers
             }
 
             Problem problem = problemRepository.GetByID(problemView.Id);
-            var pvm = GlobalHelper.GetProblemViewModel(problem);
-            pvm.Solved = false;
+            var pvm = GlobalHelper.GetShowProblemViewModel(problem);
+            pvm.IsSolved = false;
             if (ModelState.IsValidField("Answers"))
-                if (AreEqual(GetAnswersFromString(problemView.Answers, problem), problem.CorrectAnswers))
+                if (GlobalHelper.AreEqual(GetAnswersFromString(problemView.Answers, problem), problem.CorrectAnswers))
                 {
                     userSolvedRepository.Insert(new UserSolvedProblem { UserId = UserManager.FindByName(User.Identity.Name).Id, ProblemId = problem.Id });
                     var user = UserManager.FindByName(User.Identity.Name);
@@ -118,7 +122,7 @@ namespace MyWebApp.Controllers
 
                     user.Rating += (int)rating;
                     UserManager.Update(user);
-                    pvm.Solved = true;
+                    pvm.IsSolved = true;
                 }
                 else
                 {
@@ -142,12 +146,12 @@ namespace MyWebApp.Controllers
         public ActionResult Create()
         {
             ViewBag.Button = "Create";
-            return View(new ProblemViewModel { Images = new Collection<string>(), TagsString = "" });
+            return View(new EditProblemViewModel { TagsString = "" });
         }
 
         [HttpPost]
         [Authorize]
-        public ActionResult Create(ProblemViewModel problemView)
+        public ActionResult Create(EditProblemViewModel problemView)
         {
             if (ModelState.IsValidField("Answers"))
                 AddProblemFromView(problemView);
@@ -170,16 +174,14 @@ namespace MyWebApp.Controllers
                 return RedirectToAction("Index");
             }
 
-            var pvm = GlobalHelper.GetProblemViewModel(problem);
-            if (pvm.Images == null)
-                pvm.Images = new Collection<string>();
-
+            var pvm = GlobalHelper.GetEditProblemViewModel(problem);
+      
             return View(pvm);
         }
 
         [HttpPost]
         [Authorize]
-        public ActionResult Edit(ProblemViewModel problemView)
+        public ActionResult Edit(EditProblemViewModel problemView)
         {
             if (ModelState.IsValidField("Answers"))
                 UpdateProblemFromView(problemView);
@@ -334,7 +336,7 @@ namespace MyWebApp.Controllers
 
         #region helpers
 
-        public void AddProblemFromView(ProblemViewModel problemView)
+        public void AddProblemFromView(EditProblemViewModel problemView)
         {
 
 
@@ -344,7 +346,8 @@ namespace MyWebApp.Controllers
                 Name = problemView.Name,
                 Text = problemView.Text,
                 AuthorId = UserManager.FindByName(User.Identity.Name).Id,
-                Tags = new Collection<Tag>()
+                Tags = new Collection<Tag>(),
+                IsBlocked = problemView.IsBlocked
             };
 
             foreach (var tag in problemView.TagsString.Split(','))
@@ -357,12 +360,13 @@ namespace MyWebApp.Controllers
             problemRepository.Update(problem);
         }
 
-        public void UpdateProblemFromView(ProblemViewModel problemView)
+        public void UpdateProblemFromView(EditProblemViewModel problemView)
         {
             Problem problem = problemRepository.GetByID(problemView.Id);
             problem.CategoryId = problemView.SelectedCategoryId;
             problem.Name = problemView.Name;
             problem.Text = problemView.Text;
+            problem.IsBlocked = problemView.IsBlocked;
             while (problem.CorrectAnswers.Count != 0)
                 answerRepository.Delete(problem.CorrectAnswers.ElementAt(0));
     
@@ -391,17 +395,6 @@ namespace MyWebApp.Controllers
                 collection.Add(new Answer() { Text = ans.Trim(), Problem = problem });
             }
             return collection;
-        }
-
-        private bool AreEqual(ICollection<Answer> collection1, ICollection<Answer> collection2)
-        {
-            if (collection1.Count != collection2.Count) return false;
-
-            IEnumerable<string> c1 = from ans in collection1
-                                     select ans.Text;
-            IEnumerable<string> c2 = from ans in collection2
-                                     select ans.Text;
-            return c1.All(c2.Contains);
         }
 
         //[HttpPost]

@@ -69,13 +69,6 @@ namespace MyWebApp.Controllers
             return View();
         }
 
-        public ActionResult About()
-        {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
-        }
-
         public ActionResult Contact()
         {
             ViewBag.Message = "Your contact page.";
@@ -157,7 +150,7 @@ namespace MyWebApp.Controllers
             {
                 Name = problem.Name,
                 Category = problem.Category.Name,
-                Rating = problem.Likes.Count + problem.Dislikes.Count + problem.UsersWhoAttempted.Count + problem.UsersWhoSolved.Count,
+                Rating = problem.Likes.Count - problem.Dislikes.Count,
                 Id = problem.Id
             }).ToList();
         }

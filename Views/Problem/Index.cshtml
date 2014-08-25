@@ -12,10 +12,8 @@
                     <th>Problem</th>
                     <th>Author</th>
                     <th>Category</th>
-                    <th>Likes</th>
-                    <th>Dislikes</th>
+                    <th>Rating</th>
                     <th>Solved</th>
-                    <th>Attempted</th>
                 </tr>
             </thead>
             @foreach (var problem in Model)
@@ -25,22 +23,16 @@
                         @Html.ActionLink(problem.Name, "Show", "Problem", new { id = problem.Id },null)
                     </th>
                     <th>
-                        @problem.Author.UserName.ToString()
+                        @problem.Author.UserName
                     </th>
                     <th>
-                        @problem.Category.Name.ToString()
+                        @problem.Category.Name
                     </th>
                     <th>
-                        @problem.Likes.Count()
-                    </th>
-                    <th>
-                        @problem.Dislikes.Count()
+                        @(@problem.Likes.Count()-@problem.Dislikes.Count())
                     </th>
                     <th>
                         @problem.UsersWhoSolved.Count()
-                    </th>
-                    <th>
-                        @problem.UsersWhoAttempted.Count()
                     </th>
                     
                 </tr>
